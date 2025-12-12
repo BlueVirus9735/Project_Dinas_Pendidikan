@@ -44,7 +44,6 @@ export default function ProsesKMeans() {
 
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-8 min-h-screen">
-      {/* Header Section */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
           <div className="p-2.5 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
@@ -59,7 +58,6 @@ export default function ProsesKMeans() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Main Control Card */}
         <div className="lg:col-span-8 space-y-6">
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <div className="p-8 space-y-8">
@@ -133,9 +131,7 @@ export default function ProsesKMeans() {
           </div>
         </div>
 
-        {/* Info / Result Panel */}
         <div className="lg:col-span-4 space-y-6">
-          {/* Default Info Card */}
           {!result && !error && (
             <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl p-6">
               <div className="flex items-start gap-4">
@@ -155,7 +151,6 @@ export default function ProsesKMeans() {
             </div>
           )}
 
-          {/* Result Card */}
           {result && (
             <div className="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800 rounded-2xl p-6 animate-in slide-in-from-right fade-in duration-300">
               <div className="flex flex-col gap-4">
@@ -188,8 +183,6 @@ export default function ProsesKMeans() {
               </div>
             </div>
           )}
-
-          {/* Error Card */}
           {error && (
             <div className="bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800 rounded-2xl p-6 animate-in slide-in-from-right fade-in duration-300">
               <div className="flex flex-col gap-3">

@@ -25,8 +25,6 @@ export default function MainLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // Initialize all menus as expanded by default for better discovery
   const [expandedMenus, setExpandedMenus] = useState({
     ijazah: true,
     bos: true,
@@ -133,14 +131,9 @@ export default function MainLayout({ children }) {
   const menuStructure = allMenuStructure.filter((item) => {
     if (!user || !user.role) return false;
 
-    // First check role based permission
     if (item.roles && !item.roles.includes(user.role)) return false;
 
-    // Special Rule: Dana BOS only for SD operators (if they are operators)
     if (item.id === "bos" && user.role === "operator_sekolah") {
-      // Check jenjang. Note: user.sekolah might be joined or we just rely on user.jenjang provided by backend
-      // In AuthController/UserModel we selected 's.jenjang'. Ideally it's mapped to user.jenjang
-      // Let's assume user.jenjang exists now.
       if (user.jenjang !== "SD") return false;
     }
 
@@ -164,9 +157,7 @@ export default function MainLayout({ children }) {
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}
       >
-        {/* Brand / Logo Area */}
         <div className="h-24 flex items-center px-6  relative overflow-hidden">
-          {/* Abstract background accent */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
 
           <div className="flex items-center gap-4 relative z-10 w-full">
@@ -196,7 +187,6 @@ export default function MainLayout({ children }) {
           </button>
         </div>
 
-        {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
           {menuStructure.map((item, idx) => {
             if (item.type === "link") {
@@ -287,7 +277,6 @@ export default function MainLayout({ children }) {
                                                 }`
                           }
                         >
-                          {/* Vertical line connector visualization */}
                           <span
                             className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full transition-colors ${
                               // eslint-disable-next-line
@@ -315,8 +304,6 @@ export default function MainLayout({ children }) {
             return null;
           })}
         </nav>
-
-        {/* User Profile Footer */}
         <div className="p-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
           <div className="bg-white dark:bg-gray-700/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-600/50 shadow-sm mb-3 flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20">
@@ -349,7 +336,6 @@ export default function MainLayout({ children }) {
       </aside>
 
       <div className="flex-1 flex flex-col overflow-hidden relative">
-        {/* Top Header */}
         <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md  h-16 flex items-center justify-between px-6 sticky top-0 z-10">
           <div className="flex items-center">
             <button

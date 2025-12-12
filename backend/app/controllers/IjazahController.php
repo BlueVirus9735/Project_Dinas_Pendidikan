@@ -29,7 +29,7 @@ class IjazahController {
             jsonResponse(false, "Format file tidak didukung (hanya PDF/JPG/PNG).");
         }
 
-        $uploadDir = __DIR__ . "/../../uploads/";
+        $uploadDir = __DIR__ . "/../../uploads/ijazah/";
         if (!is_dir($uploadDir)) {
              mkdir($uploadDir, 0777, true);
         }
@@ -39,7 +39,6 @@ class IjazahController {
         $safeName = preg_replace('/[^a-zA-Z0-9\-_]/', '', $originalName);
         $filename = uniqid() . "_" . $safeName . "." . $ext;
         $targetFile = $uploadDir . $filename;
-
         
         $KEY = "ijazah_dinas_pendidikan";
         $fileContent = file_get_contents($file["tmp_name"]);
@@ -88,7 +87,7 @@ class IjazahController {
             return null;
         }
 
-        $filePath = __DIR__ . "/../../uploads/" . $data['file_path'];
+        $filePath = __DIR__ . "/../../uploads/ijazah/" . $data['file_path'];
         
         if (!file_exists($filePath)) {
             return null;

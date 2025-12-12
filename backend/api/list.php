@@ -39,7 +39,7 @@ try {
 
     if ($tahun) {
         $sql .= " AND i.tahun = ?";
-        $types .= "s"; // Tahun is likely stored as string or int, s works for both in bind_param usually, or use i if int.
+        $types .= "s";
         $params[] = $tahun;
     }
 

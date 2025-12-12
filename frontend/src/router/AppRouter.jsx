@@ -6,7 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import Login from "../pages/Login";
-import Home from "../pages/Home"; // Public Home
+import Home from "../pages/Home";
 import MainLayout from "../layouts/MainLayout";
 import DataIjazah from "../pages/DataIjazah";
 import UploadIjazah from "../pages/UploadIjazah";
@@ -26,8 +26,6 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   if (loading) return <div>Loading...</div>;
   if (!isAuthenticated)
     return <Navigate to="/login" state={{ from: location }} />;
-
-  // Role Check
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
     return (
       <div className="p-8 text-center text-red-600">
@@ -45,8 +43,6 @@ export default function AppRouter() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
-
-          {/* Public / Shared Routes */}
           <Route path="/" element={<Home />} />
           <Route
             path="/dashboard"
@@ -65,8 +61,6 @@ export default function AppRouter() {
               </ProtectedRoute>
             }
           />
-
-          {/* User Management Route */}
           <Route
             path="/users"
             element={
@@ -77,8 +71,6 @@ export default function AppRouter() {
               </ProtectedRoute>
             }
           />
-
-          {/* Ijazah Routes */}
           <Route
             path="/data-ijazah"
             element={
@@ -112,8 +104,6 @@ export default function AppRouter() {
               </ProtectedRoute>
             }
           />
-
-          {/* BOS Routes */}
           <Route
             path="/data-bos"
             element={

@@ -56,17 +56,11 @@ class KMeans {
 
         $this->centroids = [];
         $dataCount = count($this->data);
-
-        // 1. Choose first centroid uniformly at random
         $firstIndex = mt_rand(0, $dataCount - 1);
         $this->centroids[] = $this->data[$firstIndex];
-
-        // 2. Choose remaining k-1 centroids
         for ($i = 1; $i < $this->k; $i++) {
             $distances = [];
             $sumSquares = 0;
-
-            // Calculate min squared distance for each point to existing centroids
             foreach ($this->data as $point) {
                 $minDistSq = PHP_FLOAT_MAX;
                 foreach ($this->centroids as $centroid) {
@@ -79,8 +73,6 @@ class KMeans {
                 $distances[] = $minDistSq;
                 $sumSquares += $minDistSq;
             }
-
-            // Select next centroid with probability proportional to D(x)^2
             $randVal = mt_rand() / mt_getrandmax() * $sumSquares;
             $cumulative = 0;
             $nextCentroidIndex = -1;
@@ -92,8 +84,6 @@ class KMeans {
                     break;
                 }
             }
-            
-            // Fallback if float precision issues prevent selection
             if ($nextCentroidIndex === -1) {
                 $nextCentroidIndex = mt_rand(0, $dataCount - 1);
             }

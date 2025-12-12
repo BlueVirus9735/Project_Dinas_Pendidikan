@@ -15,7 +15,6 @@ if (!isset($input['id'])) {
 
 $id = $conn->real_escape_string($input['id']);
 
-// Ambil file_path dulu sebelum delete dari database
 $get = $conn->query("SELECT file_path FROM ijazah WHERE id='$id' LIMIT 1");
 
 if ($get->num_rows === 0) {
@@ -25,10 +24,8 @@ if ($get->num_rows === 0) {
 $file = $get->fetch_assoc()['file_path'];
 $filePath = "../uploads/" . $file;
 
-// Hapus dari database
 $conn->query("DELETE FROM ijazah WHERE id='$id'");
 
-// Hapus file jika ada
 if (file_exists($filePath)) {
     unlink($filePath);
 }

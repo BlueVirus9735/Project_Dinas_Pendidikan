@@ -9,9 +9,6 @@ import {
   RefreshCw,
   GraduationCap,
   Calendar,
-  BadgeCheck,
-  User,
-  FileCheck,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import Swal from "sweetalert2";
@@ -23,13 +20,10 @@ export default function DataIjazah() {
   const [searchTerm, setSearchTerm] = useState("");
   const [deletingId, setDeletingId] = useState(null);
 
-  // Filter States
   const [filterJenjang, setFilterJenjang] = useState("");
   const [filterSekolah, setFilterSekolah] = useState("");
   const [filterTahun, setFilterTahun] = useState("");
 
-  // Options for Dropdowns
-  // Options for Dropdowns
   const [optionSekolah, setOptionSekolah] = useState([]);
   const [optionJenjang, setOptionJenjang] = useState([]);
   const [optionTahun, setOptionTahun] = useState([]);
@@ -43,12 +37,10 @@ export default function DataIjazah() {
     ) {
       loadFilterOptions();
     }
-  }, [filterJenjang, filterSekolah, filterTahun, user]); // Reload when filters or user changes
+  }, [filterJenjang, filterSekolah, filterTahun, user]);
 
   const loadFilterOptions = async () => {
     try {
-      // Get Schools (You might want a dedicated API for this, reusing clustering/list logic or getting unique from ijazah)
-      // For now, let's fetch from schools API we made earlier or use clustering/list to get school names
       const schoolsRes = await axios.get(
         "http://localhost:8000/api/schools.php"
       );
@@ -56,14 +48,12 @@ export default function DataIjazah() {
         const schools = schoolsRes.data.data;
         setOptionSekolah(schools);
 
-        // Extract unique Jenjangs from schools
         const uniqueJenjangs = [
           ...new Set(schools.map((s) => s.jenjang).filter(Boolean)),
         ];
         setOptionJenjang(uniqueJenjangs.sort());
       }
 
-      // Get Years (Distinct years from ijazah)
       const ijazahRes = await getIjazahList({});
       if (ijazahRes.status) {
         const allIjazah = ijazahRes.data;
@@ -82,12 +72,9 @@ export default function DataIjazah() {
       setLoading(true);
       const params = {};
 
-      // Filter by school for operators
       if (user?.role === "operator_sekolah" && user?.nama_sekolah) {
         params.sekolah = user.nama_sekolah;
       }
-
-      // Admin Filters
       if (filterJenjang) params.jenjang = filterJenjang;
       if (filterSekolah) params.sekolah = filterSekolah;
       if (filterTahun) params.tahun = filterTahun;
@@ -159,9 +146,7 @@ export default function DataIjazah() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto min-h-screen transition-colors duration-300 space-y-8">
-      {/* Action Bar */}
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-        {/* Search Bar */}
         <div className="w-full md:w-96 bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center group focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
           <div className="pl-4 pr-3 text-gray-400 group-focus-within:text-emerald-500 transition-colors">
             <Search className="w-5 h-5" />
@@ -175,13 +160,10 @@ export default function DataIjazah() {
           />
         </div>
 
-        {/* Filters for Admin */}
         {(user?.role === "admin_bos" ||
           user?.role === "super_admin" ||
           user?.role === "admin_ijazah") && (
           <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0">
-            {/* Jenjang Filter */}
-
             <select
               value={filterJenjang}
               onChange={(e) => setFilterJenjang(e.target.value)}
@@ -195,7 +177,6 @@ export default function DataIjazah() {
               ))}
             </select>
 
-            {/* Sekolah Filter */}
             <select
               value={filterSekolah}
               onChange={(e) => setFilterSekolah(e.target.value)}
@@ -209,7 +190,6 @@ export default function DataIjazah() {
               ))}
             </select>
 
-            {/* Tahun Filter */}
             <select
               value={filterTahun}
               onChange={(e) => setFilterTahun(e.target.value)}
@@ -234,7 +214,6 @@ export default function DataIjazah() {
         </button>
       </div>
 
-      {/* Content Area */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
           <div className="relative">

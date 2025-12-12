@@ -56,7 +56,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen pb-12 transition-colors duration-300">
-      {/* Premium Header / Greeting Section */}
       <div className="relative bg-slate-50 pb-32 pt-12 overflow-hidden  shadow-2xl shadow-slate-200 dark:shadow-none mb-[-6rem] z-0">
         <div className="absolute inset-0 select-none pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-slate-900 opacity-90 z-10"></div>
@@ -65,7 +64,6 @@ export default function Dashboard() {
             alt="Background"
             className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
           />
-          {/* Decorative shapes */}
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-[100px] z-20 translate-x-1/2 -translate-y-1/2"></div>
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[80px] z-20 -translate-x-1/3 translate-y-1/3"></div>
         </div>
@@ -130,9 +128,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <>
-            {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Ijazah Stats - Only for Super Admin & Admin Ijazah */}
               {["super_admin", "admin_ijazah"].includes(user?.role) && (
                 <>
                   <StatsCard
@@ -144,7 +140,6 @@ export default function Dashboard() {
                     trendLabel="data terverifikasi"
                     footerValue="+12% bulan ini"
                   />
-                  {/* New Derived Stat for Ijazah: Most Active Year */}
                   <StatsCard
                     title="Dominasi Lulusan"
                     value={
@@ -160,7 +155,6 @@ export default function Dashboard() {
                     trendLabel="terbanyak"
                     footerValue="Puncak statistik"
                   />
-                  {/* New Derived Stat for Ijazah: Recent Activity Count */}
                   <StatsCard
                     title="Aktivitas Baru"
                     value={stats.recent_docs.length}
@@ -174,7 +168,6 @@ export default function Dashboard() {
                 </>
               )}
 
-              {/* BOS Stats - Only for Super Admin & Admin BOS */}
               {["super_admin", "admin_bos"].includes(user?.role) && (
                 <>
                   <StatsCard
@@ -209,9 +202,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Bar Chart - Ijazah Distribution - Hide for Admin BOS */}
               {["super_admin", "admin_ijazah"].includes(user?.role) && (
                 <div
                   className={`bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 ${
@@ -303,7 +294,6 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* Pie Chart - Akreditasi - Only for Super Admin & Admin BOS */}
               {["super_admin", "admin_bos"].includes(user?.role) && (
                 <div
                   className={`bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 flex flex-col ${
@@ -371,8 +361,6 @@ export default function Dashboard() {
                           <p>Data Akreditasi Kosong</p>
                         </div>
                       )}
-
-                      {/* Center Text */}
                       <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
                         <span className="text-4xl font-black text-gray-900 dark:text-white">
                           {stats.charts.akreditasi_distribution.reduce(
@@ -386,8 +374,6 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Custom Legend */}
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     {stats.charts.akreditasi_distribution.map((item, idx) => (
                       <div
@@ -420,8 +406,6 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
-
-            {/* Recent Items - Only show Ijazah activity to those who have access */}
             {["super_admin", "admin_ijazah"].includes(user?.role) && (
               <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-8">
@@ -491,7 +475,6 @@ export default function Dashboard() {
   );
 }
 
-// Modernized StatsCards Component
 function StatsCard({
   title,
   value,

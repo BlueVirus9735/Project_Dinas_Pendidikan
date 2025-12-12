@@ -13,18 +13,16 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState("");
   const [focusedInput, setFocusedInput] = useState(null);
 
-  const { isAuthenticated, loading: authLoading } = useAuth(); // Destructure isAuthenticated and loading
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
-  // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && isAuthenticated) {
       navigate("/dashboard", { replace: true });
     }
   }, [isAuthenticated, authLoading, navigate]);
 
-  // Prevent flashing login form while checking auth status
   if (authLoading) return null;
-  if (isAuthenticated) return null; // Double check to prevent form render before redirect logic kicks in
+  if (isAuthenticated) return null;
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,7 +34,6 @@ export default function Login() {
     setLoading(true);
     setErrorMsg("");
 
-    // Simulate smoother entry feel
     setTimeout(async () => {
       const result = await login(username, password);
 
@@ -52,9 +49,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 transition-all duration-500 bg-[url('https://images.unsplash.com/photo-1497294815431-9365093b7331?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-900/90 before:to-slate-900/90 dark:before:from-slate-900/95 dark:before:to-black/90">
       <div className="relative w-full max-w-md perspective-1000">
-        {/* Glass Card */}
         <div className="relative bg-white/10 dark:bg-black/20 backdrop-blur-xl border border-white/20 dark:border-white/10 p-8 rounded-3xl shadow-2xl shadow-blue-500/20 overflow-hidden">
-          {/* Decorative circles */}
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/30 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-500/30 rounded-full blur-3xl"></div>
 

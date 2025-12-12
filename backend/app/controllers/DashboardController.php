@@ -18,7 +18,6 @@ class DashboardController {
             $countSekolah = $bosModel->countSekolah();
             $akreditasiDist = $bosModel->getAkreditasiDistribution();
 
-            // Prepare Chart Data
             $chartData = [];
             foreach ($yearDistribution as $item) {
                 $chartData[] = [
@@ -27,7 +26,6 @@ class DashboardController {
                 ];
             }
 
-            // Prepare Pie Data
             $pieData = [];
             foreach ($akreditasiDist as $item) {
                 $pieData[] = [

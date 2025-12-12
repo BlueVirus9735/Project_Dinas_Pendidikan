@@ -29,7 +29,6 @@ export default function UploadIjazah() {
     tahun: "",
   });
 
-  // Auto-fill school for operators
   React.useEffect(() => {
     if (user?.role === "operator_sekolah" && user?.nama_sekolah) {
       setFormData((prev) => ({
@@ -80,7 +79,6 @@ export default function UploadIjazah() {
           timer: 2000,
         });
 
-        // Reset form
         setFormData({
           nama: "",
           nisn: "",
@@ -154,9 +152,7 @@ export default function UploadIjazah() {
           onSubmit={handleSubmit}
           className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-10"
         >
-          {/* Left Column: Form Fields */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Section 1 */}
             <div className="space-y-6">
               <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-700 pb-2">
                 <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg text-emerald-600 dark:text-emerald-400">
@@ -229,7 +225,6 @@ export default function UploadIjazah() {
               </div>
             </div>
 
-            {/* Section 2 */}
             <div className="space-y-6">
               <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-700 pb-2">
                 <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-blue-600 dark:text-blue-400">
@@ -302,8 +297,6 @@ export default function UploadIjazah() {
               </div>
             </div>
           </div>
-
-          {/* Right Column: File Upload & Actions */}
           <div className="flex flex-col h-full space-y-6">
             <div className="bg-gray-50 dark:bg-gray-700/20 p-6 rounded-2xl h-full flex flex-col">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">

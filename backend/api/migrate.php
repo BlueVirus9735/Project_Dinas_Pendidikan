@@ -7,7 +7,6 @@ require_once __DIR__ . "/../app/config/database.php";
 try {
     $db = Database::connect();
     
-    // Create users table
     $sqlUsers = "CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(50) NOT NULL UNIQUE,
@@ -16,8 +15,6 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     $db->exec($sqlUsers);
-    
-    // Create ijazah table
     $sqlIjazah = "CREATE TABLE IF NOT EXISTS ijazah (
         id INT AUTO_INCREMENT PRIMARY KEY,
         nama VARCHAR(100) NOT NULL,

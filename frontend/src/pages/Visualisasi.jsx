@@ -54,7 +54,6 @@ export default function Visualisasi() {
   const processChartData = (details) => {
     const counts = {};
     details.forEach((d) => {
-      // Use 'kategori' from DB if available, otherwise fallback to cluster_label
       const label = d.kategori || `Cluster ${d.cluster_label}`;
       counts[label] = (counts[label] || 0) + 1;
     });
@@ -62,7 +61,7 @@ export default function Visualisasi() {
     const formatted = Object.keys(counts).map((key) => ({
       name: key,
       value: counts[key],
-      fill: COLORS[key] || DEFAULT_COLORS[0], // Assign semantic color
+      fill: COLORS[key] || DEFAULT_COLORS[0],
     }));
     setChartData(formatted);
   };
@@ -102,7 +101,6 @@ export default function Visualisasi() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Pie Chart */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
               <PieIcon className="w-5 h-5 text-purple-500" />
@@ -144,8 +142,6 @@ export default function Visualisasi() {
               </ResponsiveContainer>
             </div>
           </div>
-
-          {/* Bar Chart */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-colors">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
               <BarIcon className="w-5 h-5 text-blue-500" />

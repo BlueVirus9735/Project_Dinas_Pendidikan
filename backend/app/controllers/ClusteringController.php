@@ -28,8 +28,6 @@ class ClusteringController {
 
         // Prepare data for K-Means (only numeric columns)
         // [id, jumlah_siswa, jumlah_guru, jumlah_rombel, dana_bos, kondisi_fasilitas_rusak]
-        // Prepare data for K-Means (only numeric columns)
-        // [id, jumlah_siswa, jumlah_guru, jumlah_rombel, dana_bos, kondisi_fasilitas_rusak]
         $dataset = [];
         $idMapping = []; // map index back to DB ID
         
@@ -157,6 +155,7 @@ class ClusteringController {
                 fgetcsv($handle);
                 
                 $firstRowDebug = null;
+                $count = 0;
                 
                 while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     if ($firstRowDebug === null) {
@@ -217,10 +216,7 @@ class ClusteringController {
     }
 
     public function store() {
-        // Handle Multipart Form Data
         $input = $_POST;
-        
-        // If empty $_POST, maybe it was JSON? fallback to JSON input
         if (empty($input)) {
              $json = json_decode(file_get_contents("php://input"), true);
              if ($json) $input = $json;
@@ -262,10 +258,7 @@ class ClusteringController {
 
             $status = $input['status'] ?? 'DRAFT';
             $file_path = null;
-
-            // Handle File Upload
             if (isset($_FILES['file_bukti']) && $_FILES['file_bukti']['error'] == 0) {
-                // Point to backend/uploads (outside app)
                 $uploadDir = __DIR__ . '/../../uploads/bukti_bos/';
                 if (!file_exists($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
@@ -275,7 +268,7 @@ class ClusteringController {
                 $targetPath = $uploadDir . $fileName;
                 
                 if (move_uploaded_file($_FILES['file_bukti']['tmp_name'], $targetPath)) {
-                    $file_path = 'uploads/bukti_bos/' . $fileName; // Relative path for DB
+                    $file_path = 'uploads/bukti_bos/' . $fileName;
                 }
             }
 
@@ -327,9 +320,7 @@ class ClusteringController {
                 $dataToUpdate['status'] = $input['status'];
             }
 
-            // Handle File Upload Update
             if (isset($_FILES['file_bukti']) && $_FILES['file_bukti']['error'] == 0) {
-                // Point to backend/uploads (outside app)
                 $uploadDir = __DIR__ . '/../../uploads/bukti_bos/';
                  if (!file_exists($uploadDir)) {
                     mkdir($uploadDir, 0777, true);
@@ -360,7 +351,7 @@ class ClusteringController {
              return;
         }
 
-        $valid = ['APPROVED', 'REJECTED', 'PENDING_VERIF']; // Allowed targets
+        $valid = ['APPROVED', 'REJECTED', 'PENDING_VERIF'];
         if (!in_array($input['status'], $valid)) {
              echo json_encode(["status" => "error", "message" => "Invalid status"]);
              return;

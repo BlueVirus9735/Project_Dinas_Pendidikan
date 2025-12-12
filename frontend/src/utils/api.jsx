@@ -1,7 +1,5 @@
 // src/utils/api.jsx
-const BASE_URL = "http://localhost:8000/api"; // sesuaikan kalau port/backend path beda
-
-/* ---- helper untuk parse response ---- */
+const BASE_URL = "http://localhost:8000/api";
 async function parseJSONResponse(res) {
   const contentType = res.headers.get("content-type") || "";
   if (contentType.includes("application/json")) {
@@ -12,7 +10,6 @@ async function parseJSONResponse(res) {
   return { success: res.ok, message: text, data: null };
 }
 
-/* ---- generic GET ---- */
 async function getJSON(url) {
   try {
     const res = await fetch(url, {
@@ -29,8 +26,6 @@ async function getJSON(url) {
     };
   }
 }
-
-/* ---- generic POST JSON ---- */
 async function postJSON(url, body = {}) {
   try {
     const res = await fetch(url, {
@@ -51,20 +46,12 @@ async function postJSON(url, body = {}) {
     };
   }
 }
-
-/* ---- named exports ---- */
-
-/**
- * Ambil semua data ijazah
- * returns { status:true/false, message, data: [...] } OR { success ... } - function is tolerant
- */
 export async function getIjazah() {
   const url = `${BASE_URL}/list.php`;
   const res = await getJSON(url);
-  // normalize backend yang menggunakan "status"/"message"/"data" atau raw array
+
   if (Array.isArray(res)) return { success: true, message: "OK", data: res };
   if (res && (res.status !== undefined || res.data !== undefined)) {
-    // backend earlier returns {status: true, message, data: [...]}
     const success =
       res.status === true || res.success === true || res.status === "success";
     return { success, message: res.message || "", data: res.data || [] };
@@ -72,10 +59,6 @@ export async function getIjazah() {
   return { success: false, message: "Unknown response", data: [] };
 }
 
-/**
- * Ambil detail ijazah menurut id
- * returns normalized object
- */
 export async function getDetailIjazah(id) {
   if (!id) return { success: false, message: "ID diperlukan", data: null };
   const url = `${BASE_URL}/detail.php?id=${encodeURIComponent(id)}`;
@@ -93,19 +76,14 @@ export async function getDetailIjazah(id) {
   };
 }
 
-/**
- * Upload ijazah (FormData)
- * formData should contain fields: file, nama, nisn, tanggal_lahir, nama_orang_tua, nomor_ijazah, sekolah, tahun
- */
 export async function uploadIjazah(formData) {
   try {
     const res = await fetch(`${BASE_URL}/upload.php`, {
       method: "POST",
-      body: formData, // multipart/form-data
+      body: formData,
       credentials: "include",
     });
     const parsed = await parseJSONResponse(res);
-    // normalize
     if (parsed && parsed.status !== undefined) {
       return {
         success: parsed.status === true || parsed.status === "success",
@@ -127,15 +105,9 @@ export async function uploadIjazah(formData) {
     };
   }
 }
-
-/**
- * Delete ijazah by ID
- * backend expects JSON { id }
- */
 export async function deleteIjazah(id) {
   if (!id) return { success: false, message: "ID diperlukan" };
   const res = await postJSON(`${BASE_URL}/delete.php`, { id });
-  // normalize
   if (res && (res.status !== undefined || res.success !== undefined)) {
     const success =
       res.status === true || res.success === true || res.status === "success";
@@ -143,11 +115,6 @@ export async function deleteIjazah(id) {
   }
   return { success: false, message: res.message || "Gagal menghapus" };
 }
-
-/**
- * Download file (returns Blob)
- * Expects backend endpoint download.php?id=...
- */
 export async function downloadIjazah(id) {
   if (!id) throw new Error("ID diperlukan");
   const url = `${BASE_URL}/download.php?id=${encodeURIComponent(id)}`;
@@ -164,16 +131,10 @@ export async function downloadIjazah(id) {
     return { success: false, message: err.message || "Gagal download" };
   }
 }
-
-/**
- * Login (expects JSON body { username, password })
- * Note: backend earlier returns simple response; adjust accordingly
- */
 export async function login(username, password) {
   if (!username || !password)
     return { success: false, message: "Username & password diperlukan" };
   const res = await postJSON(`${BASE_URL}/login.php`, { username, password });
-  // if backend returns token, store it
   if (
     res &&
     (res.status === true || res.success === true || res.status === "success")
@@ -191,18 +152,12 @@ export async function login(username, password) {
   }
   return { success: false, message: res.message || "Login gagal", data: null };
 }
-
-/**
- * Optional helper to attach token from localStorage when needed
- */
 export function getAuthHeaders() {
   const token = localStorage.getItem("token");
   const headers = {};
   if (token) headers["Authorization"] = `Bearer ${token}`;
   return headers;
 }
-
-/* ---- default export (allows `import api from "../utils/api"` ) ---- */
 export default {
   getIjazah,
   getDetailIjazah,

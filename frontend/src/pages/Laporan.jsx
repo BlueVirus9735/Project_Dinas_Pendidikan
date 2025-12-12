@@ -19,7 +19,6 @@ export default function Laporan() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Laporan Ijazah */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col transition-colors hover:shadow-lg duration-300 group">
           <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
             <FileSpreadsheet className="w-7 h-7" />
@@ -40,8 +39,6 @@ export default function Laporan() {
             </button>
           </div>
         </div>
-
-        {/* Laporan BOS */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col transition-colors hover:shadow-lg duration-300 group">
           <div className="w-14 h-14 rounded-2xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
             <FileText className="w-7 h-7" />
@@ -62,8 +59,6 @@ export default function Laporan() {
             </button>
           </div>
         </div>
-
-        {/* Laporan Clustering */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 flex flex-col transition-colors hover:shadow-lg duration-300 group">
           <div className="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
             <Printer className="w-7 h-7" />

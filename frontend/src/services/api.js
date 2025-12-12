@@ -4,9 +4,7 @@ const API_URL = "http://localhost:8000/api";
 
 export const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    // "Content-Type": "application/json", // Axios sets this automatically for objects, but for FormData we let browser set it
-  },
+  headers: {},
 });
 
 export const getIjazahList = async (params = {}) => {
@@ -56,7 +54,7 @@ export const uploadIjazah = async (formData) => {
 export default {
   get: (url) => api.get(url),
   post: (url, data) => api.post(url, data),
-  getIjazah: getIjazahList, // Mapping for old code compatibility if needed
+  getIjazah: getIjazahList,
   deleteIjazah,
   uploadIjazah,
 };

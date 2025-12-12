@@ -31,7 +31,7 @@ class EvaluasiBosModel {
     }
 
     public function save($data) {
-        $status = $data['status'] ?? 'DRAFT'; // Default to DRAFT
+        $status = $data['status'] ?? 'DRAFT';
         $file_path = $data['file_bukti_path'] ?? null;
 
         $sql = "INSERT INTO data_evaluasi_bos 
@@ -63,12 +63,10 @@ class EvaluasiBosModel {
             'akreditasi' => $data['akreditasi']
         ];
 
-        // Conditional update for status if provided
         if (isset($data['status'])) {
             $fields['status'] = $data['status'];
         }
 
-        // Conditional update for file path if provided
         if (isset($data['file_bukti_path'])) {
             $fields['file_bukti_path'] = $data['file_bukti_path'];
         }
@@ -95,8 +93,7 @@ class EvaluasiBosModel {
             ':catatan' => $catatan
         ]);
     }
-    
-    // For clustering, we need numeric data only (normalized usually, but let's grab raw first)
+
     public function getDataForClustering($tahun) {
         $sql = "SELECT id, jumlah_siswa, jumlah_guru, jumlah_rombel, dana_bos, kondisi_fasilitas_rusak 
                 FROM data_evaluasi_bos WHERE tahun = :tahun AND status = 'APPROVED'";
@@ -106,7 +103,6 @@ class EvaluasiBosModel {
     }
 
     public function getTotalSiswa() {
-        // Assume latest year for validation
         $sql = "SELECT SUM(jumlah_siswa) as total FROM data_evaluasi_bos WHERE tahun = (SELECT MAX(tahun) FROM data_evaluasi_bos)";
         $stmt = $this->db->query($sql);
         return $stmt->fetchColumn() ?: 0;

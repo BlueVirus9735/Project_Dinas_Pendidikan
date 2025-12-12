@@ -34,7 +34,6 @@ class UserController {
         $existingSchool = $sekolahModel->findByNPSN($npsn);
         
         if ($existingSchool) {
-           // Update existing school details if found (in case name/jenjang changed)
            $sekolahModel->update($existingSchool['id'], [
                'nama_sekolah' => $namaSekolah,
                'alamat' => $input['alamat'] ?? $existingSchool['alamat'],
@@ -42,7 +41,6 @@ class UserController {
            ]);
            return $existingSchool['id'];
         } else {
-            // Create new school
             if ($sekolahModel->create([
                 'nama_sekolah' => $namaSekolah,
                 'npsn'        => $npsn,
@@ -67,8 +65,6 @@ class UserController {
         $username = trim($input['username']);
         $password = $input['password'];
         $role = $input['role'] ?? 'user';
-        
-        // Handle School Input (New or Existing)
         $sekolahId = $this->processSchoolInput($input);
 
         if ($this->userModel->findByUsername($username)) {
@@ -99,8 +95,6 @@ class UserController {
         }
         if (isset($input['role'])) $data['role'] = $input['role'];
         
-        // Handle School Input (New or Existing)
-        // Check if we are updating school info
         if (isset($input['new_school']) || array_key_exists('sekolah_id', $input)) {
              $data['sekolah_id'] = $this->processSchoolInput($input);
         }

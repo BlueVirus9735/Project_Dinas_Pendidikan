@@ -14,7 +14,7 @@ import Swal from "sweetalert2";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
-  const [schools, setSchools] = useState([]); // New state for schools
+  const [schools, setSchools] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
@@ -23,7 +23,7 @@ export default function UserManagement() {
     username: "",
     password: "",
     role: "user",
-    sekolah_id: "", // New field
+    sekolah_id: "",
     nama_sekolah: "",
     npsn: "",
     jenjang: "SD",
@@ -35,7 +35,7 @@ export default function UserManagement() {
 
   useEffect(() => {
     fetchUsers();
-    fetchSchools(); // Fetch schools on mount
+    fetchSchools();
   }, []);
 
   const fetchSchools = async () => {
@@ -67,7 +67,6 @@ export default function UserManagement() {
     e.preventDefault();
     try {
       if (editingUser) {
-        // Edit mode
         const payload = { ...formData, new_school: isNewSchool };
         const response = await axios.put(
           `${apiUrl}?id=${editingUser.id}`,
@@ -77,7 +76,6 @@ export default function UserManagement() {
           Swal.fire("Berhasil", "User berhasil diperbarui", "success");
         }
       } else {
-        // Create mode
         const payload = { ...formData, new_school: isNewSchool };
         const response = await axios.post(apiUrl, payload);
         if (response.data.status) {
@@ -96,7 +94,7 @@ export default function UserManagement() {
         jenjang: "SD",
       });
       fetchUsers();
-      fetchSchools(); // Refresh schools list to reflect any new/updated schools
+      fetchSchools();
     } catch (error) {
       Swal.fire(
         "Gagal",
@@ -110,20 +108,13 @@ export default function UserManagement() {
     setEditingUser(user);
     setFormData({
       username: user.username,
-      password: "", // Password not shown for security, user can fill to change
+      password: "",
       role: user.role,
       sekolah_id: user.sekolah_id || "",
       nama_sekolah: user.nama_sekolah || "",
       npsn: user.npsn || "",
       jenjang: user.jenjang || "SD",
     });
-    // Optional: If you want to default to manual input if school exists but can be edited
-    // setIsNewSchool(!!user.sekolah_id);
-    // Usually keep it false unless user explicitly wants to check manual.
-    // However, to make editing seeing the values EASIER, checking it might be better?
-    // User complaint "tetap tidak terupdate" implies they tried manual input.
-    // Let's NOT auto-check it to verify logic, OR check it if school exists?
-    // Let's keep it unchecked by default, but fields are filled if they check it.
     setIsModalOpen(true);
   };
 
@@ -302,7 +293,6 @@ export default function UserManagement() {
         </div>
       </div>
 
-      {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-md shadow-2xl transform transition-all border border-gray-100 dark:border-gray-700 overflow-hidden">
@@ -389,8 +379,6 @@ export default function UserManagement() {
                   </div>
                 </div>
               </div>
-
-              {/* School Dropdown - Only if role includes 'operator' */}
               {formData.role.includes("operator") && (
                 <div className="animate-in fade-in slide-in-from-top-2 duration-300 space-y-4">
                   <div className="flex items-center gap-2 mb-2">

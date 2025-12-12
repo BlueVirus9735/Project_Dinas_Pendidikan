@@ -12,8 +12,6 @@ require_once __DIR__ . '/../app/controllers/UserController.php';
 
 $controller = new UserController();
 $method = $_SERVER['REQUEST_METHOD'];
-
-// Parse ID from URL if exists (e.g., /users.php?id=1)
 $id = isset($_GET['id']) ? $_GET['id'] : null;
 
 switch ($method) {

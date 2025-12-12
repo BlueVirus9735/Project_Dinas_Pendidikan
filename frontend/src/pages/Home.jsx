@@ -37,7 +37,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white font-sans selection:bg-indigo-500 selection:text-white overflow-x-hidden">
-      {/* Decorative Background Elements */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse-slow"></div>
         <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[100px]"></div>
@@ -65,7 +64,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Content */}
       <main className="relative z-40 max-w-7xl mx-auto px-6 pt-12 lg:pt-24 pb-20">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 animate-in slide-in-from-left-10 duration-1000 fade-in">
@@ -122,7 +120,6 @@ export default function Home() {
             <div className="relative w-full max-w-lg aspect-square">
               <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-blue-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
 
-              {/* Main Card */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-96 bg-slate-800/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl flex flex-col p-6 rotate-[-6deg] hover:rotate-0 transition-all duration-700 z-20 group">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-400">
@@ -140,7 +137,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Secondary Card */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/3 -translate-y-2/3 w-72 h-80 bg-slate-800/80 backdrop-blur-xl border border-white/10 rounded-3xl shadow-xl flex flex-col p-6 rotate-[12deg] hover:rotate-[6deg] transition-all duration-700 z-10 animate-float">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
@@ -150,7 +146,6 @@ export default function Home() {
                 <div className="flex-1 bg-white/5 rounded-xl border border-white/5"></div>
               </div>
 
-              {/* Floating Icons */}
               <div className="absolute -top-10 -right-10 w-20 h-20 bg-slate-800/90 backdrop-blur-md rounded-2xl border border-white/10 flex items-center justify-center shadow-xl animate-bounce delay-700 z-30">
                 <Database className="w-8 h-8 text-blue-400" />
               </div>
@@ -162,7 +157,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="relative z-50 border-t border-white/10 bg-slate-900/50 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid md:grid-cols-4 gap-12 mb-12">

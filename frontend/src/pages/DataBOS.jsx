@@ -3,7 +3,6 @@ import axios from "axios";
 import { read, utils } from "xlsx";
 import Swal from "sweetalert2";
 import {
-  Upload,
   RefreshCw,
   Plus,
   X,
@@ -13,7 +12,6 @@ import {
   Edit,
   FileSpreadsheet,
   Trash2,
-  Save,
   CheckCircle,
   AlertCircle,
   TrendingUp,
@@ -28,7 +26,6 @@ export default function DataBOS() {
   const [uploading, setUploading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -47,7 +44,6 @@ export default function DataBOS() {
     status: "DRAFT",
   });
 
-  // Pre-fill data for operators
   useEffect(() => {
     if (isModalOpen && user?.role === "operator_sekolah" && !isEditing) {
       setFormData((prev) => ({
@@ -102,8 +98,6 @@ export default function DataBOS() {
 
     try {
       let fileToUpload = file;
-
-      // Check if file is Excel
       if (file.name.endsWith(".xlsx") || file.name.endsWith(".xls")) {
         const data = await file.arrayBuffer();
         const workbook = read(data);
@@ -168,8 +162,6 @@ export default function DataBOS() {
       if (formData.file_bukti) {
         data.append("file_bukti", formData.file_bukti);
       }
-
-      // Ensure sekolah_id is passed if user is operator
       if (user?.role === "operator_sekolah") {
         data.append("sekolah_id", user.sekolah_id);
       }
@@ -226,7 +218,7 @@ export default function DataBOS() {
       if (text) {
         catatan = text;
       } else {
-        return; // Cancelled
+        return;
       }
     } else {
       const result = await Swal.fire({
@@ -306,8 +298,6 @@ export default function DataBOS() {
       file_bukti: e.target.files[0],
     }));
   };
-
-  // Filter Data
   const filteredData = data.filter(
     (item) =>
       item.nama_sekolah.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -353,8 +343,6 @@ export default function DataBOS() {
             <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
           </button>
         </div>
-
-        {/* Hidden Form for Upload Logic Compatibility */}
         {file && (
           <div className="lg:col-span-3">
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/50 p-4 rounded-xl flex items-center justify-between animate-in fade-in slide-in-from-top-2">
@@ -375,8 +363,6 @@ export default function DataBOS() {
           </div>
         )}
       </div>
-
-      {/* Main Table Card */}
       <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
         <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
           <Database className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -540,7 +526,6 @@ export default function DataBOS() {
                     </td>
                     {user && user.role !== "super_admin" && (
                       <td className="px-6 py-4 text-center last:pr-8">
-                        {/* Logic for Operators: Edit if Draft or Rejected */}
                         {user.role === "operator_sekolah" &&
                           (item.status === "DRAFT" ||
                             item.status === "REJECTED") && (
@@ -552,8 +537,6 @@ export default function DataBOS() {
                               <Edit className="w-4 h-4" />
                             </button>
                           )}
-
-                        {/* Logic for Admins: Approve/Reject if Pending */}
                         {(user.role === "admin_bos" ||
                           user.role === "super_admin") &&
                           item.status === "PENDING_VERIF" && (
@@ -578,8 +561,6 @@ export default function DataBOS() {
                               </button>
                             </div>
                           )}
-
-                        {/* Fallback for Admins to Edit if needed (optional) */}
                         {(user.role === "admin_bos" ||
                           user.role === "super_admin") &&
                           item.status !== "PENDING_VERIF" && (
@@ -600,8 +581,6 @@ export default function DataBOS() {
           </table>
         </div>
       </div>
-
-      {/* Modal with Dual Theme Support */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
           <div
@@ -610,7 +589,6 @@ export default function DataBOS() {
           ></div>
 
           <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden relative z-10 animate-in zoom-in-95 duration-300 border border-white/20 dark:border-white/10">
-            {/* Modal Header */}
             <div className="px-8 py-6 flex justify-between items-center shrink-0 border-b border-gray-100 dark:border-white/10 bg-gray-50/50 dark:bg-white/5">
               <div className="flex items-center gap-4">
                 <div
@@ -646,14 +624,11 @@ export default function DataBOS() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-
-            {/* Modal Form */}
             <form
               onSubmit={handleManualSubmit}
               className="p-8 overflow-y-auto custom-scrollbar"
             >
               <div className="grid grid-cols-12 gap-8">
-                {/* Left Column: School Identity */}
                 <div className="col-span-12 lg:col-span-7 space-y-6">
                   <div className="bg-gray-50 dark:bg-slate-800/50 p-6 rounded-2xl space-y-5 border border-gray-100 dark:border-white/5">
                     <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 text-sm uppercase tracking-wider">
@@ -760,10 +735,7 @@ export default function DataBOS() {
                     </div>
                   </div>
                 </div>
-
-                {/* Right Column: Statistics & Accreditation & Upload */}
                 <div className="col-span-12 lg:col-span-5 space-y-6">
-                  {/* Data Statistik */}
                   <div className="bg-gray-50 dark:bg-slate-800/50 p-6 border border-gray-100 dark:border-white/5 rounded-2xl space-y-5 shadow-sm">
                     <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 text-sm uppercase tracking-wider">
                       <Database className="w-4 h-4 text-emerald-500" /> Data
@@ -821,8 +793,6 @@ export default function DataBOS() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Akreditasi */}
                   <div className="bg-gray-50 dark:bg-slate-800/50 p-6 border border-gray-100 dark:border-white/5 rounded-2xl space-y-4 shadow-sm">
                     <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 text-sm uppercase tracking-wider mb-2">
                       <CheckCircle className="w-4 h-4 text-purple-500" /> Status
@@ -867,8 +837,6 @@ export default function DataBOS() {
                       ))}
                     </div>
                   </div>
-
-                  {/* Dokumen Pendukung */}
                   <div className="bg-gray-50 dark:bg-slate-800/50 p-6 border border-gray-100 dark:border-white/5 rounded-2xl space-y-4 shadow-sm">
                     <h4 className="font-bold text-gray-900 dark:text-white flex items-center gap-2 text-sm uppercase tracking-wider mb-2">
                       <FileSpreadsheet className="w-4 h-4 text-orange-500" />{" "}
@@ -887,8 +855,6 @@ export default function DataBOS() {
                   </div>
                 </div>
               </div>
-
-              {/* Action Buttons */}
               <div className="mt-8 pt-6 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3 sticky bottom-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-4 -mx-8 -mb-8 rounded-b-2xl">
                 <button
                   type="button"
@@ -897,7 +863,6 @@ export default function DataBOS() {
                 >
                   Batal
                 </button>
-                {/* Two Action Buttons: Draft vs Kirim */}
                 {!isEditing ||
                 (user?.role === "operator_sekolah" &&
                   (formData.status === "DRAFT" ||
@@ -921,7 +886,6 @@ export default function DataBOS() {
                     </button>
                   </>
                 ) : (
-                  // For Admins or when Editing approved data (if allowed)
                   <button
                     type="submit"
                     disabled={uploading}
