@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { getIjazahList, deleteIjazah } from "../services/api";
-import {
-  Trash2,
-  Download,
-  Search,
-  FileText,
-  RefreshCw,
-  GraduationCap,
-  Calendar,
-} from "lucide-react";
+
+import { getIjazahList, deleteIjazah, api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import Swal from "sweetalert2";
+
+// Components
+import IjazahHeader from "../components/ijazah/IjazahHeader";
+import IjazahFilter from "../components/ijazah/IjazahFilter";
+import IjazahTable from "../components/ijazah/IjazahTable";
 
 export default function DataIjazah() {
   const { user } = useAuth();
@@ -41,9 +37,7 @@ export default function DataIjazah() {
 
   const loadFilterOptions = async () => {
     try {
-      const schoolsRes = await axios.get(
-        "http://localhost:8000/api/schools.php"
-      );
+      const schoolsRes = await api.get("/schools.php");
       if (schoolsRes.data.status) {
         const schools = schoolsRes.data.data;
         setOptionSekolah(schools);
@@ -63,7 +57,7 @@ export default function DataIjazah() {
         setOptionTahun(uniqueYears.sort((a, b) => b - a)); // Sort descending
       }
     } catch (err) {
-      console.error("Gagal memuat opsi filter");
+      console.error("Gagal memuat opsi filter", err);
     }
   };
 
@@ -147,206 +141,42 @@ export default function DataIjazah() {
   return (
     <div className="p-8 max-w-7xl mx-auto min-h-screen transition-colors duration-300 space-y-8">
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="w-full md:w-96 bg-white dark:bg-gray-800 p-2 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex items-center group focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all">
-          <div className="pl-4 pr-3 text-gray-400 group-focus-within:text-emerald-500 transition-colors">
-            <Search className="w-5 h-5" />
-          </div>
-          <input
-            type="text"
-            placeholder="Cari Siswa, NISN, atau Sekolah..."
-            className="w-full bg-transparent border-none focus:ring-0 text-gray-700 dark:text-gray-200 placeholder-gray-400 h-10 text-sm"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+        <div className="w-full">
+          <IjazahHeader
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onRefresh={loadData}
+            loading={loading}
           />
         </div>
-
-        {(user?.role === "admin_bos" ||
-          user?.role === "super_admin" ||
-          user?.role === "admin_ijazah") && (
-          <div className="flex gap-3 overflow-x-auto pb-1 md:pb-0">
-            <select
-              value={filterJenjang}
-              onChange={(e) => setFilterJenjang(e.target.value)}
-              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500/20"
-            >
-              <option value="">Semua Jenjang</option>
-              {optionJenjang.map((j) => (
-                <option key={j} value={j}>
-                  {j}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={filterSekolah}
-              onChange={(e) => setFilterSekolah(e.target.value)}
-              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500/20 max-w-[150px]"
-            >
-              <option value="">Semua Sekolah</option>
-              {optionSekolah.map((s) => (
-                <option key={s.id} value={s.nama_sekolah}>
-                  {s.nama_sekolah}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={filterTahun}
-              onChange={(e) => setFilterTahun(e.target.value)}
-              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-500/20"
-            >
-              <option value="">Semua Tahun</option>
-              {optionTahun.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        <button
-          onClick={loadData}
-          className="p-3 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-100 dark:border-gray-700 shadow-sm transition-colors flex gap-2 items-center text-sm font-medium"
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-          Refresh Data
-        </button>
       </div>
-
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-emerald-100 border-t-emerald-500 rounded-full animate-spin"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-emerald-500" />
-            </div>
-          </div>
-          <p className="text-gray-500 dark:text-gray-400 font-medium mt-4">
-            Mengambil data arsip...
-          </p>
-        </div>
-      ) : filteredData.length === 0 ? (
-        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-16 text-center">
-          <div className="mx-auto h-24 w-24 bg-gray-50 dark:bg-gray-900/50 rounded-full flex items-center justify-center mb-6">
-            <Search className="h-10 w-10 text-gray-300 dark:text-gray-600" />
-          </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-            Tidak ada data ditemukan
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-            Kami tidak dapat menemukan data yang cocok dengan "{searchTerm}".
-            Coba kata kunci lain.
-          </p>
-        </div>
-      ) : (
-        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead className="bg-gray-50/50 dark:bg-gray-700/30">
-                <tr>
-                  <th className="px-6 py-5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider first:pl-8">
-                    Identitas Siswa
-                  </th>
-                  <th className="px-6 py-5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Nomor Ijazah & NISN
-                  </th>
-                  <th className="px-6 py-5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Asal Sekolah
-                  </th>
-                  <th className="px-6 py-5 text-right text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider last:pr-8">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-                {filteredData.map((item, i) => (
-                  <tr
-                    key={item.id}
-                    className="group hover:bg-emerald-50/30 dark:hover:bg-emerald-900/10 transition-colors"
-                  >
-                    <td className="px-6 py-4 first:pl-8">
-                      <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg shadow-sm">
-                          {item.nama.charAt(0)}
-                        </div>
-                        <div>
-                          <div className="text-base font-bold text-gray-900 dark:text-white group-hover:text-emerald-600 transition-colors">
-                            {item.nama}
-                          </div>
-                          <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            <Calendar className="w-3 h-3" />
-                            {item.tanggal_lahir || "Tidak ada tanggal lahir"}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-col gap-1">
-                        <span className="inline-flex w-fit items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-mono">
-                          <FileText className="w-3 h-3" />
-                          {item.nomor_ijazah}
-                        </span>
-                        <span className="text-xs text-gray-500 pl-1">
-                          NISN:{" "}
-                          <span className="font-semibold text-gray-700 dark:text-gray-300">
-                            {item.nisn}
-                          </span>
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
-                        {item.sekolah}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
-                          Lulus {item.tahun}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-right last:pr-8">
-                      <div className="flex items-center justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
-                        {item.file_path ? (
-                          <a
-                            href={`http://localhost:8000/api/download.php?id=${item.id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40 rounded-xl transition-all text-xs font-bold"
-                            title="Download Scan Ijazah"
-                          >
-                            <Download className="w-4 h-4" />
-                            <span className="hidden sm:inline">Unduh</span>
-                          </a>
-                        ) : (
-                          <span className="text-xs text-gray-400 italic px-3">
-                            Tanpa File
-                          </span>
-                        )}
-
-                        {user && user.role !== "super_admin" && (
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            disabled={deletingId === item.id}
-                            className="p-2 bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40 rounded-xl transition-colors disabled:opacity-50"
-                            title="Hapus Data"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="bg-gray-50 dark:bg-gray-700/20 p-4 border-t border-gray-100 dark:border-gray-700 text-center text-xs text-gray-500">
-            Menampilkan {filteredData.length} arsip ijazah
-          </div>
+      {(user?.role === "admin_bos" ||
+        user?.role === "super_admin" ||
+        user?.role === "admin_ijazah") && (
+        <div className="flex justify-end">
+          <IjazahFilter
+            filterJenjang={filterJenjang}
+            setFilterJenjang={setFilterJenjang}
+            filterSekolah={filterSekolah}
+            setFilterSekolah={setFilterSekolah}
+            filterTahun={filterTahun}
+            setFilterTahun={setFilterTahun}
+            optionJenjang={optionJenjang}
+            optionSekolah={optionSekolah}
+            optionTahun={optionTahun}
+          />
         </div>
       )}
+
+      <IjazahTable
+        data={filteredData}
+        loading={loading}
+        searchTerm={searchTerm}
+        user={user}
+        onDelete={handleDelete}
+        deletingId={deletingId}
+        onRefresh={loadData}
+      />
     </div>
   );
 }

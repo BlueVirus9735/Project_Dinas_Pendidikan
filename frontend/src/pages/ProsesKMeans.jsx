@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { api } from "../services/api";
 import {
   Play,
   Settings,
@@ -21,13 +21,10 @@ export default function ProsesKMeans() {
     setResult(null);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/clustering/process.php",
-        {
-          k: k,
-          tahun: tahun,
-        }
-      );
+      const response = await api.post("/clustering/process.php", {
+        k: k,
+        tahun: tahun,
+      });
 
       if (response.data.status === "success") {
         setResult(response.data.data);

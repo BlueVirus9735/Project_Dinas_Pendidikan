@@ -13,7 +13,7 @@ class UserModel {
     public function findByUsername($username) {
         $stmt = $this->db->prepare("
             SELECT u.id, u.username, u.password, u.role, u.sekolah_id, u.nama_lengkap, 
-                   s.jenjang, s.nama_sekolah, s.npsn 
+                   s.jenjang, s.nama_sekolah, s.npsn, s.jumlah_siswa  
             FROM users u
             LEFT JOIN sekolah_bos s ON u.sekolah_id = s.id
             WHERE u.username = :username 

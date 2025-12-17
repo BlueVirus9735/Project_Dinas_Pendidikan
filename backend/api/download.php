@@ -3,6 +3,14 @@
 
 require_once __DIR__ . '/../app/config/database.php';
 require_once __DIR__ . '/../app/controllers/IjazahController.php';
+require_once __DIR__ . '/../app/helpers/AuthMiddleware.php';
+
+// Download might be via direct link (GET), so we need to handle token being passed in URL often, 
+// OR simpler: assume frontend downloads via Blob/AJAX with header.
+// But for standard <a> href, we might need ?token=XYZ.
+// For now, let's stick to Header check if frontend uses Blob method, OR strict check.
+// Optimization: If user clicks "Download", frontend should probably fetch with Header.
+AuthMiddleware::check();
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 

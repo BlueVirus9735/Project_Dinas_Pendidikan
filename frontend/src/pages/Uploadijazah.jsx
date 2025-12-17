@@ -25,7 +25,6 @@ export default function UploadIjazah() {
     nama_orang_tua: "",
     nomor_ijazah: "",
     sekolah: "",
-    sekolah: "",
     tahun: "",
   });
 
@@ -172,7 +171,7 @@ export default function UploadIjazah() {
                     type="text"
                     name="nama"
                     className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400"
-                    placeholder="Contoh: Ahmad Fauzi"
+                    placeholder="Masukan nama siswa"
                     value={formData.nama}
                     onChange={handleChange}
                     required
@@ -377,7 +376,7 @@ export default function UploadIjazah() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:-translate-y-1 transition-all disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-linear-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:-translate-y-1 transition-all disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>

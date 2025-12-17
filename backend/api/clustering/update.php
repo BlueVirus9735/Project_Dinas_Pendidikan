@@ -9,6 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . "/../../app/controllers/ClusteringController.php";
+require_once __DIR__ . '/../../app/helpers/AuthMiddleware.php';
+
+AuthMiddleware::check();
 
 $controller = new ClusteringController();
 $controller->updateData();

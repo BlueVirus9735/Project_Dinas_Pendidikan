@@ -4,8 +4,10 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-require_once '../../app/config/Database.php';
-require_once '../../app/controllers/ClusteringController.php';
+require_once __DIR__ . '/../../app/controllers/ClusteringController.php';
+require_once __DIR__ . '/../../app/helpers/AuthMiddleware.php';
+
+AuthMiddleware::check();
 
 $controller = new ClusteringController();
 $controller->verify();

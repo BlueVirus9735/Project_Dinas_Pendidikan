@@ -52,4 +52,16 @@ class IjazahModel {
         $stmt = $this->db->query("SELECT tahun, COUNT(*) as count FROM ijazah GROUP BY tahun ORDER BY tahun ASC");
         return $stmt->fetchAll();
     }
+
+    public function updateSkpiStatus($id, $status, $filePath = null) {
+        if ($filePath) {
+            $sql = "UPDATE ijazah SET skpi_status = :status, file_surat_polisi = :file WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([':status' => $status, ':file' => $filePath, ':id' => $id]);
+        } else {
+            $sql = "UPDATE ijazah SET skpi_status = :status WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([':status' => $status, ':id' => $id]);
+        }
+    }
 }

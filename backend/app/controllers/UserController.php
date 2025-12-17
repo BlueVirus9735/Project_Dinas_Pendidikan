@@ -18,26 +18,44 @@ class UserController {
     }
 
     private function processSchoolInput($input) {
-        if (!isset($input['new_school']) || $input['new_school'] !== true) {
-            return $input['sekolah_id'] ?? null;
+        $sekolahModel = new SekolahModel();
+
+        // 1. If using existing school ID
+        if ((!isset($input['new_school']) || $input['new_school'] !== true) && !empty($input['sekolah_id'])) {
+            $id = $input['sekolah_id'];
+            // Update jumlah_siswa if provided
+            if (isset($input['jumlah_siswa'])) {
+                $current = $sekolahModel->find($id);
+                if ($current) {
+                    $sekolahModel->update($id, [
+                        'nama_sekolah' => $current['nama_sekolah'],
+                        'alamat' => $current['alamat'],
+                        'jenjang' => $current['jenjang'],
+                        'jumlah_siswa' => $input['jumlah_siswa']
+                    ]);
+                }
+            }
+            return $id;
         }
 
+        // 2. If creating new school or updating by NPSN
         $namaSekolah = $input['nama_sekolah'] ?? '';
         $npsn = $input['npsn'] ?? '';
         $jenjang = $input['jenjang'] ?? '';
+        $jumlahSiswa = $input['jumlah_siswa'] ?? 0;
 
         if (!$namaSekolah || !$npsn || !$jenjang) {
              jsonResponse(false, "Nama Sekolah, NPSN, dan Jenjang wajib diisi untuk sekolah baru.");
         }
         
-        $sekolahModel = new SekolahModel();
         $existingSchool = $sekolahModel->findByNPSN($npsn);
         
         if ($existingSchool) {
            $sekolahModel->update($existingSchool['id'], [
                'nama_sekolah' => $namaSekolah,
                'alamat' => $input['alamat'] ?? $existingSchool['alamat'],
-               'jenjang' => $jenjang
+               'jenjang' => $jenjang,
+               'jumlah_siswa' => $jumlahSiswa
            ]);
            return $existingSchool['id'];
         } else {
@@ -45,7 +63,8 @@ class UserController {
                 'nama_sekolah' => $namaSekolah,
                 'npsn'        => $npsn,
                 'alamat'      => $input['alamat'] ?? '',
-                'jenjang'     => $jenjang
+                'jenjang'     => $jenjang,
+                'jumlah_siswa' => $jumlahSiswa
             ])) {
                 $createdSchool = $sekolahModel->findByNPSN($npsn);
                 return $createdSchool['id'];

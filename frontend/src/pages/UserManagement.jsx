@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { api } from "../services/api";
 import {
   Plus,
   Edit,
@@ -27,11 +27,10 @@ export default function UserManagement() {
     nama_sekolah: "",
     npsn: "",
     jenjang: "SD",
+    jumlah_siswa: 0,
   });
 
   const [isNewSchool, setIsNewSchool] = useState(false);
-
-  const apiUrl = "http://localhost:8000/api/users.php";
 
   useEffect(() => {
     fetchUsers();
@@ -40,7 +39,7 @@ export default function UserManagement() {
 
   const fetchSchools = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/schools.php");
+      const response = await api.get("/schools.php");
       if (response.data.status) {
         setSchools(response.data.data);
       }
@@ -52,7 +51,7 @@ export default function UserManagement() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(apiUrl);
+      const response = await api.get("/users.php");
       if (response.data.status) {
         setUsers(response.data.data);
       }
@@ -68,8 +67,8 @@ export default function UserManagement() {
     try {
       if (editingUser) {
         const payload = { ...formData, new_school: isNewSchool };
-        const response = await axios.put(
-          `${apiUrl}?id=${editingUser.id}`,
+        const response = await api.put(
+          `/users.php?id=${editingUser.id}`,
           payload
         );
         if (response.data.status) {
@@ -77,7 +76,7 @@ export default function UserManagement() {
         }
       } else {
         const payload = { ...formData, new_school: isNewSchool };
-        const response = await axios.post(apiUrl, payload);
+        const response = await api.post("/users.php", payload);
         if (response.data.status) {
           Swal.fire("Berhasil", "User berhasil ditambahkan", "success");
         }
@@ -114,6 +113,7 @@ export default function UserManagement() {
       nama_sekolah: user.nama_sekolah || "",
       npsn: user.npsn || "",
       jenjang: user.jenjang || "SD",
+      jumlah_siswa: user.jumlah_siswa || 0,
     });
     setIsModalOpen(true);
   };
@@ -131,7 +131,7 @@ export default function UserManagement() {
 
     if (result.isConfirmed) {
       try {
-        const response = await axios.delete(`${apiUrl}?id=${id}`);
+        const response = await api.delete(`/users.php?id=${id}`);
         if (response.data.status) {
           Swal.fire("Terhapus!", "User telah dihapus.", "success");
           fetchUsers();
@@ -165,6 +165,7 @@ export default function UserManagement() {
               nama_sekolah: "",
               npsn: "",
               jenjang: "SD",
+              jumlah_siswa: 0,
             });
             setIsNewSchool(false);
             setIsModalOpen(true);
@@ -405,12 +406,19 @@ export default function UserManagement() {
                       <div className="relative">
                         <select
                           value={formData.sekolah_id}
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            const selectedId = e.target.value;
+                            const selectedSchool = schools.find(
+                              (s) => s.id == selectedId
+                            );
                             setFormData({
                               ...formData,
-                              sekolah_id: e.target.value,
-                            })
-                          }
+                              sekolah_id: selectedId,
+                              jumlah_siswa: selectedSchool
+                                ? selectedSchool.jumlah_siswa
+                                : 0,
+                            });
+                          }}
                           className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer"
                           required={!isNewSchool}
                         >
@@ -433,6 +441,24 @@ export default function UserManagement() {
                             ></path>
                           </svg>
                         </div>
+                      </div>
+                      <div className="mt-4">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                          Jumlah Siswa
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.jumlah_siswa}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              jumlah_siswa: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                          placeholder="Jumlah Siswa"
+                          min="0"
+                        />
                       </div>
                     </div>
                   ) : (
@@ -492,6 +518,25 @@ export default function UserManagement() {
                             <option value="SMK">SMK</option>
                           </select>
                         </div>
+                      </div>
+                      <div className="mt-2">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                          Jumlah Siswa
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.jumlah_siswa}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              jumlah_siswa: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                          placeholder="Jumlah Siswa"
+                          min="0"
+                          required={isNewSchool}
+                        />
                       </div>
                     </div>
                   )}

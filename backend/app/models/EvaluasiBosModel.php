@@ -9,7 +9,7 @@ class EvaluasiBosModel {
     }
 
     public function getAll($sekolah_id = null) {
-        $sql = "SELECT d.*, s.nama_sekolah, s.npsn 
+        $sql = "SELECT d.*, s.nama_sekolah, s.npsn, d.detail_kerusakan 
                 FROM data_evaluasi_bos d 
                 JOIN sekolah_bos s ON d.sekolah_id = s.id";
         
@@ -33,10 +33,11 @@ class EvaluasiBosModel {
     public function save($data) {
         $status = $data['status'] ?? 'DRAFT';
         $file_path = $data['file_bukti_path'] ?? null;
+        $detail_kerusakan = $data['detail_kerusakan'] ?? null;
 
         $sql = "INSERT INTO data_evaluasi_bos 
-                (sekolah_id, tahun, jumlah_siswa, jumlah_guru, jumlah_rombel, dana_bos, kondisi_fasilitas_rusak, akreditasi, status, file_bukti_path) 
-                VALUES (:sekolah_id, :tahun, :jumlah_siswa, :jumlah_guru, :jumlah_rombel, :dana_bos, :kondisi_fasilitas_rusak, :akreditasi, :status, :file_bukti_path)";
+                (sekolah_id, tahun, jumlah_siswa, jumlah_guru, jumlah_rombel, dana_bos, kondisi_fasilitas_rusak, detail_kerusakan, akreditasi, status, file_bukti_path) 
+                VALUES (:sekolah_id, :tahun, :jumlah_siswa, :jumlah_guru, :jumlah_rombel, :dana_bos, :kondisi_fasilitas_rusak, :detail_kerusakan, :akreditasi, :status, :file_bukti_path)";
         
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
@@ -47,6 +48,7 @@ class EvaluasiBosModel {
             ':jumlah_rombel' => $data['jumlah_rombel'],
             ':dana_bos' => $data['dana_bos'],
             ':kondisi_fasilitas_rusak' => $data['kondisi_fasilitas_rusak'],
+            ':detail_kerusakan' => $detail_kerusakan,
             ':akreditasi' => $data['akreditasi'],
             ':status' => $status,
             ':file_bukti_path' => $file_path
@@ -69,6 +71,10 @@ class EvaluasiBosModel {
 
         if (isset($data['file_bukti_path'])) {
             $fields['file_bukti_path'] = $data['file_bukti_path'];
+        }
+
+        if (array_key_exists('detail_kerusakan', $data)) {
+            $fields['detail_kerusakan'] = $data['detail_kerusakan'];
         }
 
         $setClause = [];
@@ -95,7 +101,7 @@ class EvaluasiBosModel {
     }
 
     public function getDataForClustering($tahun) {
-        $sql = "SELECT id, jumlah_siswa, jumlah_guru, jumlah_rombel, dana_bos, kondisi_fasilitas_rusak 
+        $sql = "SELECT id, jumlah_siswa, jumlah_guru, jumlah_rombel, dana_bos, kondisi_fasilitas_rusak, detail_kerusakan 
                 FROM data_evaluasi_bos WHERE tahun = :tahun AND status = 'APPROVED'";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':tahun' => $tahun]);
@@ -103,19 +109,19 @@ class EvaluasiBosModel {
     }
 
     public function getTotalSiswa() {
-        $sql = "SELECT SUM(jumlah_siswa) as total FROM data_evaluasi_bos WHERE tahun = (SELECT MAX(tahun) FROM data_evaluasi_bos)";
+        $sql = "SELECT SUM(jumlah_siswa) as total FROM sekolah_bos";
         $stmt = $this->db->query($sql);
         return $stmt->fetchColumn() ?: 0;
     }
 
     public function getTotalDanaBos() {
-        $sql = "SELECT SUM(dana_bos) as total FROM data_evaluasi_bos WHERE tahun = (SELECT MAX(tahun) FROM data_evaluasi_bos)";
+        $sql = "SELECT SUM(dana_bos) as total FROM data_evaluasi_bos WHERE status = 'APPROVED'";
         $stmt = $this->db->query($sql);
         return $stmt->fetchColumn() ?: 0;
     }
 
     public function countSekolah() {
-        $sql = "SELECT COUNT(DISTINCT sekolah_id) as total FROM data_evaluasi_bos";
+        $sql = "SELECT COUNT(*) as total FROM sekolah_bos";
         $stmt = $this->db->query($sql);
         return $stmt->fetchColumn() ?: 0;
     }

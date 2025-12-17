@@ -26,28 +26,39 @@ class ClusteringController {
             return;
         }
 
-        // Prepare data for K-Means (only numeric columns)
-        // [id, jumlah_siswa, jumlah_guru, jumlah_rombel, dana_bos, kondisi_fasilitas_rusak]
+        // Prepare data for K-Means
+        // Features: [jumlah_siswa, jumlah_guru, dana_bos, jumlah_fasilitas, kondisi_fasilitas_rusak]
         $dataset = [];
         $idMapping = []; // map index back to DB ID
         
         foreach ($rawData as $index => $row) {
+            // Calculate total units damaged from JSON
+            $jumlah_fasilitas = 0;
+            if (!empty($row['detail_kerusakan'])) {
+                $details = json_decode($row['detail_kerusakan'], true);
+                if (is_array($details)) {
+                    foreach ($details as $item) {
+                        $jumlah_fasilitas += isset($item['count']) ? (int)$item['count'] : 0;
+                    }
+                }
+            }
+
             $dataset[] = [
-                (float)$row['jumlah_siswa'], 
-                (float)$row['jumlah_guru'], 
-                (float)$row['jumlah_rombel'],
-                (float)$row['dana_bos'],
-                (float)$row['kondisi_fasilitas_rusak']
+                (float)$row['jumlah_siswa'],             // x1 (Index 0)
+                (float)$row['jumlah_guru'],              // x2 (Index 1)
+                (float)$row['dana_bos'],                 // x3 (Index 2)
+                (float)$row['jumlah_rombel'],            // x4 (Index 3)
+                (float)$row['kondisi_fasilitas_rusak'],  // x5 (Index 4)
+                (float)$jumlah_fasilitas                 // x6 (Index 5)
             ];
             $idMapping[$index] = $row['id'];
         }
 
-        // 1. Min-Max Normalization
-        $numFeatures = 5;
+        // 2. Normalisasi (Min-Max) - WAJIB
+        $numFeatures = 6;
         $min = array_fill(0, $numFeatures, PHP_FLOAT_MAX);
         $max = array_fill(0, $numFeatures, PHP_FLOAT_MIN);
 
-        // Find Min/Max
         foreach ($dataset as $row) {
             for ($i = 0; $i < $numFeatures; $i++) {
                 if ($row[$i] < $min[$i]) $min[$i] = $row[$i];
@@ -60,22 +71,42 @@ class ClusteringController {
             $normalizedRow = [];
             for ($i = 0; $i < $numFeatures; $i++) {
                 $denom = $max[$i] - $min[$i];
-                // Avoid division by zero if max == min
                 $normalizedRow[$i] = ($denom == 0) ? 0 : ($row[$i] - $min[$i]) / $denom;
             }
             $normalizedDataset[] = $normalizedRow;
         }
 
+        // 3. Euclidean Distance (Handled by KMeans Class)
         $kmeans = new KMeans($k);
         $result = $kmeans->fit($normalizedDataset);
         $score = $kmeans->calculateSilhouetteScore();
-
         
         $centroids = $result['centroids']; 
         $clusterIndices = array_keys($centroids);
         
+        // 6. Penentuan Prioritas (REKOMENDASI SISTEM)
+        // Balanced Formula: Equity + Impact + Need
         usort($clusterIndices, function($a, $b) use ($centroids) {
-            return $centroids[$a][4] <=> $centroids[$b][4];
+            $calcScore = function($c) {
+                // x5 (Index 4): Skor Kerusakan -> Bobot 3.0 (Tetap Raja)
+                // x3 (Index 2): Dana BOS -> Bobot 2.5 (Inverse: Makin miskin makin prioritas)
+                // x1 (Index 0): Jumlah Siswa -> Bobot 1.5 (BOOST NAIK: Biar sekolah padat lebih diperhatikan)
+                // x6 (Index 5): Jumlah Item -> Bobot 1.5
+                // x4 (Index 3): Rombel -> Bobot 1.0
+                
+                $skorScore    = $c[4] * 3.0;
+                $fundScore    = (1.0 - $c[2]) * 2.5;
+                $studentScore = $c[0] * 1.5; 
+                $itemScore    = $c[5] * 1.5;
+                $rombelScore  = $c[3] * 1.0;
+                
+                return $skorScore + $fundScore + $studentScore + $itemScore + $rombelScore;
+            };
+
+            $scoreA = $calcScore($centroids[$a]);
+            $scoreB = $calcScore($centroids[$b]);
+            
+            return $scoreA <=> $scoreB;
         });
 
         $mapping = []; 
@@ -177,9 +208,18 @@ class ClusteringController {
                         $sekolahModel->create([
                             'nama_sekolah' => $row[0] ?? 'Unknown',
                             'npsn' => $npsn,
-                            'alamat' => $row[2] ?? ''
+                            'alamat' => $row[2] ?? '',
+                            'jumlah_siswa' => (int) preg_replace('/[^0-9]/', '', $row[4] ?? 0)
                         ]);
                         $sekolah = $sekolahModel->findByNPSN($npsn);
+                    } else {
+                         // Update existing school student count
+                         $sekolahModel->update($sekolah['id'], [
+                            'nama_sekolah' => $sekolah['nama_sekolah'],
+                            'alamat' => $sekolah['alamat'], 
+                            'jenjang' => $sekolah['jenjang'],
+                            'jumlah_siswa' => (int) preg_replace('/[^0-9]/', '', $row[4] ?? 0)
+                        ]);
                     }
                     
                     $evalModel->save([
@@ -217,6 +257,13 @@ class ClusteringController {
 
     public function store() {
         $input = $_POST;
+        
+        // DEBUG: Log input details
+        $log = "Time: " . date('Y-m-d H:i:s') . "\n";
+        $log .= "Input: " . print_r($input, true) . "\n";
+        $log .= "Files: " . print_r($_FILES, true) . "\n";
+        file_put_contents(__DIR__ . '/../../debug_bos_store.txt', $log, FILE_APPEND);
+
         if (empty($input)) {
              $json = json_decode(file_get_contents("php://input"), true);
              if ($json) $input = $json;
@@ -243,11 +290,26 @@ class ClusteringController {
                     $sekolahModel->create([
                         'nama_sekolah' => $input['nama_sekolah'],
                         'npsn' => $npsn,
-                        'alamat' => $input['alamat']
+                        'alamat' => $input['alamat'],
+                        'jumlah_siswa' => $input['jumlah_siswa'] ?? 0
                     ]);
                     $sekolah = $sekolahModel->findByNPSN($npsn);
                 }
                 $sekolah_id = $sekolah['id'];
+            }
+
+            // CENTRALIZED UPDATE FOR MASTER SCHOOL
+            // Ensure master data is synced with latest BOS input (especially jumlah_siswa)
+            if ($sekolah_id) {
+                $currentSekolah = $sekolahModel->find($sekolah_id);
+                if ($currentSekolah && isset($input['jumlah_siswa'])) {
+                    $sekolahModel->update($sekolah_id, [
+                        'nama_sekolah' => $currentSekolah['nama_sekolah'],
+                        'alamat'       => $currentSekolah['alamat'], 
+                        'jenjang'      => $currentSekolah['jenjang'],
+                        'jumlah_siswa' => $input['jumlah_siswa']
+                    ]);
+                }
             }
 
             $currentYearDataCheck = $this->checkExistingData($sekolah_id, $input['tahun']);
@@ -280,6 +342,7 @@ class ClusteringController {
                 'jumlah_rombel' => $input['jumlah_rombel'],
                 'dana_bos' => $input['dana_bos'],
                 'kondisi_fasilitas_rusak' => $input['kondisi_fasilitas_rusak'],
+                'detail_kerusakan' => isset($input['detail_kerusakan']) ? $input['detail_kerusakan'] : null,
                 'akreditasi' => $input['akreditasi'],
                 'status' => $status,
                 'file_bukti_path' => $file_path
@@ -298,7 +361,7 @@ class ClusteringController {
              $json = json_decode(file_get_contents("php://input"), true);
              if ($json) $input = $json;
         }
-
+        
         if (!$input || !isset($input['id'])) {
              echo json_encode(["status" => "error", "message" => "Invalid input"]);
              return;
@@ -315,6 +378,10 @@ class ClusteringController {
                 'kondisi_fasilitas_rusak' => $input['kondisi_fasilitas_rusak'],
                 'akreditasi' => $input['akreditasi']
             ];
+
+            if (isset($input['detail_kerusakan'])) {
+                $dataToUpdate['detail_kerusakan'] = $input['detail_kerusakan'];
+            }
 
             if (isset($input['status'])) {
                 $dataToUpdate['status'] = $input['status'];

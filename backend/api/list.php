@@ -1,11 +1,14 @@
 <?php
 
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json");
 
 require_once "../app/config/database.php";
+require_once "../app/helpers/response.php";
+require_once "../app/helpers/AuthMiddleware.php";
 
+AuthMiddleware::check();
 $response = [
     "status" => false,
     "message" => "",
