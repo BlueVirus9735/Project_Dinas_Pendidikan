@@ -122,7 +122,7 @@ export default function IjazahTable({
               >
                 <td className="px-6 py-4 first:pl-8">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg shadow-sm">
+                    <div className="h-12 w-12 rounded-2xl bg-linear-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg shadow-sm">
                       {item.nama.charAt(0)}
                     </div>
                     <div>
@@ -232,7 +232,7 @@ export default function IjazahTable({
                             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">
                               {status === "rejected"
                                 ? "Pengajuan Ditolak"
-                                : "Belum Diajukan"}
+                                : "SKPI Belum Diajukan"}
                             </span>
                           );
                         }

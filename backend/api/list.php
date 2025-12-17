@@ -1,7 +1,7 @@
 <?php
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+require_once __DIR__ . '/../app/config/cors.php';
 header("Content-Type: application/json");
 
 require_once "../app/config/database.php";
