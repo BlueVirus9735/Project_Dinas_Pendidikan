@@ -42,7 +42,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
       name: "Dashboard",
       path: "/dashboard",
       icon: LayoutDashboard,
-      roles: ["super_admin", "admin_ijazah", "admin_bos"],
+      roles: ["super_admin", "admin_ijazah"],
     },
     {
       type: "link",
@@ -79,44 +79,6 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
           path: "/upload-ijazah",
           icon: Upload,
           roles: ["admin_ijazah", "operator_sekolah", "operator_ijazah"],
-        },
-      ],
-    },
-    {
-      type: "group",
-      id: "bos",
-      label: "Dana BOS",
-      icon: PieChart,
-      roles: ["super_admin", "admin_bos", "operator_sekolah", "operator_bos"],
-      items: [
-        {
-          name: "Data BOS",
-          path: "/data-bos",
-          icon: Database,
-          roles: [
-            "super_admin",
-            "admin_bos",
-            "operator_sekolah",
-            "operator_bos",
-          ],
-        },
-        {
-          name: "Proses K-Means",
-          path: "/proses-kmeans",
-          icon: LayoutDashboard,
-          roles: ["super_admin", "admin_bos", "operator_bos"],
-        },
-        {
-          name: "Hasil Klaster",
-          path: "/hasil-klaster",
-          icon: GraduationCap,
-          roles: ["super_admin", "admin_bos", "operator_bos"],
-        },
-        {
-          name: "Visualisasi",
-          path: "/visualisasi",
-          icon: LayoutDashboard,
-          roles: ["super_admin", "admin_bos", "operator_bos"],
         },
       ],
     },

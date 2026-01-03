@@ -84,7 +84,13 @@ class UserController {
         $username = trim($input['username']);
         $password = $input['password'];
         $role = $input['role'] ?? 'user';
-        $sekolahId = $this->processSchoolInput($input);
+        
+        $nonSchoolRoles = ['super_admin', 'admin_ijazah', 'admin_bos'];
+        $sekolahId = null;
+
+        if (!in_array($role, $nonSchoolRoles)) {
+            $sekolahId = $this->processSchoolInput($input);
+        }
 
         if ($this->userModel->findByUsername($username)) {
             jsonResponse(false, "Username sudah digunakan");
@@ -114,7 +120,16 @@ class UserController {
         }
         if (isset($input['role'])) $data['role'] = $input['role'];
         
-        if (isset($input['new_school']) || array_key_exists('sekolah_id', $input)) {
+        $nonSchoolRoles = ['super_admin', 'admin_ijazah', 'admin_bos'];
+        
+        // Determine the effective role (new role or existing role if not changed)
+        // Note: For simplicity in update, if role is passed, we check it. 
+        // If not passed, we assume we might need to keep existing school logic or update it if new_school is triggered.
+        // However, safest is: if role is changing to an admin role, force school_id to null.
+        
+        if (isset($input['role']) && in_array($input['role'], $nonSchoolRoles)) {
+            $data['sekolah_id'] = null;
+        } elseif (isset($input['new_school']) || array_key_exists('sekolah_id', $input)) {
              $data['sekolah_id'] = $this->processSchoolInput($input);
         }
 

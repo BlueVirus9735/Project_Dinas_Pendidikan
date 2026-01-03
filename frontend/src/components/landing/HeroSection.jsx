@@ -20,7 +20,7 @@ export default function HeroSection({ isAuthenticated, stats }) {
 
       <p className="text-lg text-slate-400 max-w-xl leading-relaxed">
         Platform manajemen data pendidikan Kabupaten Cirebon yang terintegrasi.
-        Mengelola Arsip Ijazah, Dana Bantuan Operasi Sekolah
+        Mengelola Arsip Ijazah
       </p>
 
       <div className="flex flex-wrap gap-4 pt-4">

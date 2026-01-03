@@ -11,13 +11,9 @@ import MainLayout from "../layouts/MainLayout";
 import DataIjazah from "../pages/DataIjazah";
 import UploadIjazah from "../pages/UploadIjazah";
 import Dashboard from "../pages/Dashboard";
-import DataBOS from "../pages/DataBOS";
-import ProsesKMeans from "../pages/ProsesKMeans";
-import HasilKlaster from "../pages/HasilKlaster";
-import Visualisasi from "../pages/Visualisasi";
-import Laporan from "../pages/Laporan";
 import UserManagement from "../pages/UserManagement";
 import { AuthProvider, useAuth } from "../context/AuthContext";
+import Laporan from "../pages/Laporan";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { isAuthenticated, loading, user } = useAuth();
@@ -51,7 +47,6 @@ export default function AppRouter() {
                 allowedRoles={[
                   "super_admin",
                   "admin_ijazah",
-                  "admin_bos",
                   "operator_sekolah",
                 ]}
               >
@@ -104,65 +99,11 @@ export default function AppRouter() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/data-bos"
-            element={
-              <ProtectedRoute
-                allowedRoles={[
-                  "super_admin",
-                  "admin_bos",
-                  "operator_sekolah",
-                  "operator_bos",
-                ]}
-              >
-                <MainLayout>
-                  <DataBOS />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/proses-kmeans"
-            element={
-              <ProtectedRoute
-                allowedRoles={["super_admin", "admin_bos", "operator_bos"]}
-              >
-                <MainLayout>
-                  <ProsesKMeans />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/hasil-klaster"
-            element={
-              <ProtectedRoute
-                allowedRoles={["super_admin", "admin_bos", "operator_bos"]}
-              >
-                <MainLayout>
-                  <HasilKlaster />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/visualisasi"
-            element={
-              <ProtectedRoute
-                allowedRoles={["super_admin", "admin_bos", "operator_bos"]}
-              >
-                <MainLayout>
-                  <Visualisasi />
-                </MainLayout>
-              </ProtectedRoute>
-            }
-          />
+
           <Route
             path="/laporan"
             element={
-              <ProtectedRoute
-                allowedRoles={["super_admin", "admin_ijazah", "admin_bos"]}
-              >
+              <ProtectedRoute allowedRoles={["super_admin", "admin_ijazah"]}>
                 <MainLayout>
                   <Laporan />
                 </MainLayout>

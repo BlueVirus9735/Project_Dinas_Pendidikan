@@ -21,7 +21,7 @@ export default function DashboardHeader({ user }) {
             Selamat Datang, {user?.username || "Admin"}
           </h1>
           <p className="text-slate-300 text-lg max-w-xl">
-            Sistem arsip digital Pendidikan dan pengelolaan dana Pendidikan
+            Sistem arsip digital Pendidikan Pendidikan
           </p>
         </div>
 

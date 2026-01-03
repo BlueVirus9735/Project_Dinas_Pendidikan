@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import DashboardHeader from "../components/dashboard/DashboardHeader";
 import DashboardStats from "../components/dashboard/DashboardStats";
 import GraduationTrendChart from "../components/dashboard/GraduationTrendChart";
-import AccreditationChart from "../components/dashboard/AccreditationChart";
+
 import RecentActivities from "../components/dashboard/RecentActivities";
 
 export default function Dashboard() {
@@ -73,10 +73,6 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <GraduationTrendChart
                 data={stats.charts.ijazah_per_year}
-                userRole={user?.role}
-              />
-              <AccreditationChart
-                data={stats.charts.akreditasi_distribution}
                 userRole={user?.role}
               />
             </div>
