@@ -18,6 +18,7 @@ class IjazahController {
         $tahun            = $_POST["tahun"];
         $nomor_ijazah     = $_POST["nomor_ijazah"] ?? "IJZ-" . rand(100000, 999999);
         $sekolah          = $_POST["sekolah"];
+        $file_hash        = $_POST["file_hash"] ?? null; // Hash from frontend
 
         if(!$nama || !$nisn || !$tanggal_lahir || !$nama_orang_tua || !$tahun) {
             jsonResponse(false, "Semua field wajib diisi.");
@@ -41,8 +42,14 @@ class IjazahController {
         $filename = uniqid() . "_" . $safeName . "." . $ext;
         $targetFile = $uploadDir . $filename;
         
-        $KEY = "ijazah_dinas_pendidikan";
+        // Use nomor_ijazah as encryption key (unique per ijazah)
+        $KEY = $nomor_ijazah;
         $fileContent = file_get_contents($file["tmp_name"]);
+        
+        // Generate file hash if not provided (for duplicate detection)
+        if (!$file_hash) {
+            $file_hash = base64_encode(hash('sha256', $fileContent, true));
+        }
         
         // Encrypt: XOR + Base64
         $encrypted = "";
@@ -67,7 +74,8 @@ class IjazahController {
                 "nomor_ijazah"      => $nomor_ijazah,
                 "sekolah"           => $sekolah,
                 "tahun"             => $tahun,
-                "file_path"         => $filename
+                "file_path"         => $filename,
+                "file_hash"         => $file_hash
             ]);
             
             if ($save) {
@@ -110,10 +118,24 @@ class IjazahController {
             return null;
         }
 
-        $fileContent = file_get_contents($filePath);
+        // Read encrypted file (Base64 encoded)
+        $encryptedBase64 = file_get_contents($filePath);
+        
+        // Decode Base64
+        $encryptedData = base64_decode($encryptedBase64);
+        
+        // Decrypt using nomor_ijazah as key
+        $KEY = $data['nomor_ijazah'];
+        $decrypted = "";
+        $keyLength = strlen($KEY);
+        
+        for ($i = 0; $i < strlen($encryptedData); $i++) {
+            $decrypted .= $encryptedData[$i] ^ $KEY[$i % $keyLength];
+        }
+        
         return [
             'filename' => $data['file_path'],
-            'filedata' => $fileContent
+            'filedata' => $decrypted // Return decrypted data
         ];
     }
     

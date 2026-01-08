@@ -34,16 +34,25 @@ if (!$res || !isset($res['filename']) || !isset($res['filedata'])) {
 }
 
 $filename = $res['filename'];
-$encryptedData = $res['filedata'];
+$encryptedData = $res['filedata']; // Already decrypted by controller
 
-// Dekripsi file data
-$xorData = base64_decode($encryptedData);
-$KEY = "ijazah_dinas_pendidikan";
-$decrypted = "";
-$keyLength = strlen($KEY);
-
-for ($i = 0; $i < strlen($xorData); $i++) {
-    $decrypted .= $xorData[$i] ^ $KEY[$i % $keyLength];
+// Log download activity
+if ($user) {
+    // Get ijazah data for logging
+    $stmt = $conn->prepare("SELECT nama, nisn FROM ijazah WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($ijazahData = $result->fetch_assoc()) {
+        ActivityLogger::log(
+            $conn,
+            $user,
+            'ijazah_download',
+            'ijazah',
+            "Download ijazah siswa: {$ijazahData['nama']} (NISN: {$ijazahData['nisn']})"
+        );
+    }
+    $stmt->close();
 }
 
 // Log download activity
@@ -68,8 +77,8 @@ if ($user) {
 // Set headers untuk download
 header('Content-Type: application/octet-stream');
 header('Content-Disposition: attachment; filename="' . $filename . '"');
-header('Content-Length: ' . strlen($decrypted));
+header('Content-Length: ' . strlen($encryptedData));
 
-echo $decrypted;
+echo $encryptedData; // Already decrypted by IjazahController
 exit;
 

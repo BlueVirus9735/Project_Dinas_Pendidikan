@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { uploadIjazah } from "../services/api";
+import { uploadIjazah, api } from "../services/api";
 import {
   Upload,
   CheckCircle,
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { useAuth } from "../context/AuthContext";
+import { generateFileHash } from "../utils/encryption";
 
 export default function UploadIjazah() {
   const { user } = useAuth();
@@ -38,6 +39,7 @@ export default function UploadIjazah() {
   }, [user]);
 
   const [file, setFile] = useState(null);
+  const [fileHash, setFileHash] = useState("");
   const [loading, setLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
 
@@ -63,6 +65,7 @@ export default function UploadIjazah() {
       form.append(key, formData[key]);
     });
     form.append("file", file);
+    form.append("file_hash", fileHash); // Add file hash
 
     setLoading(true);
 
@@ -131,17 +134,81 @@ export default function UploadIjazah() {
     }
   };
 
-  const handleFileSelect = (e) => {
-    if (e.target.files[0]) {
-      if (e.target.files[0].size > 5 * 1024 * 1024) {
-        Swal.fire(
-          "File Terlalu Besar",
-          "Maksimal ukuran file adalah 5MB",
-          "warning"
-        );
+  const handleFileSelect = async (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (!selectedFile) return;
+
+    // Check file size
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      Swal.fire(
+        "File Terlalu Besar",
+        "Maksimal ukuran file adalah 5MB",
+        "warning"
+      );
+      return;
+    }
+
+    // Check if nomor ijazah is filled
+    if (!formData.nomor_ijazah) {
+      Swal.fire({
+        icon: "warning",
+        title: "Nomor Ijazah Kosong",
+        text: "Harap isi nomor ijazah terlebih dahulu sebelum memilih file",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    try {
+      const hash = await generateFileHash(selectedFile);
+      setFileHash(hash);
+
+      const checkResult = await api.post("/check-duplicate.php", {
+        nomor_ijazah: formData.nomor_ijazah,
+        file_hash: hash,
+      });
+
+      if (checkResult.data.data?.duplicate) {
+        Swal.fire({
+          icon: "error",
+          title: "Duplicate Detected!",
+          html: `
+            <p class="text-red-600 font-bold">${checkResult.data.message}</p>
+            <div class="mt-4 p-3 bg-gray-100 rounded-lg text-left">
+              <p class="text-sm"><strong>Type:</strong> ${
+                checkResult.data.data.type === "nomor"
+                  ? "Nomor Ijazah Duplicate"
+                  : "File Content Duplicate"
+              }</p>
+              ${
+                checkResult.data.data.existing_data
+                  ? `
+                <p class="text-sm mt-1"><strong>Existing:</strong> ${checkResult.data.data.existing_data.nama}</p>
+                <p class="text-sm"><strong>Sekolah:</strong> ${checkResult.data.data.existing_data.sekolah}</p>
+              `
+                  : ""
+              }
+            </div>
+          `,
+          confirmButtonColor: "#EF4444",
+        });
+        e.target.value = ""; // Clear input
+        setFile(null);
+        setFileHash("");
         return;
       }
-      setFile(e.target.files[0]);
+
+      // No duplicate, set file
+      setFile(selectedFile);
+    } catch (error) {
+      console.error("Error checking duplicate:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Gagal memeriksa duplicate. Silakan coba lagi.",
+      });
+      e.target.value = "";
     }
   };
   return (

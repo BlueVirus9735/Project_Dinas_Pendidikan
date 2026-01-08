@@ -34,17 +34,7 @@ if (!$res || !isset($res['filename']) || !isset($res['filedata'])) {
 }
 
 $filename = $res['filename'];
-$encryptedData = $res['filedata'];
-
-// Dekripsi file data
-$xorData = base64_decode($encryptedData);
-$KEY = "ijazah_dinas_pendidikan";
-$decrypted = "";
-$keyLength = strlen($KEY);
-
-for ($i = 0; $i < strlen($xorData); $i++) {
-    $decrypted .= $xorData[$i] ^ $KEY[$i % $keyLength];
-}
+$fileData = $res['filedata'];
 
 // Deteksi MIME type berdasarkan extension
 $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
@@ -63,9 +53,9 @@ $mimeType = isset($mimeTypes[$ext]) ? $mimeTypes[$ext] : 'application/octet-stre
 // Set headers untuk preview inline (bukan download)
 header('Content-Type: ' . $mimeType);
 header('Content-Disposition: inline; filename="' . $filename . '"');
-header('Content-Length: ' . strlen($decrypted));
+header('Content-Length: ' . strlen($fileData));
 header('Cache-Control: public, max-age=3600');
 
-echo $decrypted;
+echo $fileData;
 exit;
 

@@ -13,8 +13,8 @@ class IjazahModel {
     public function save($data) {
         
         $sql = "INSERT INTO ijazah 
-        (nama, nisn, tanggal_lahir, nama_orang_tua, nomor_ijazah, sekolah, tahun, file_path, created_at) 
-        VALUES (:nama, :nisn, :tanggal_lahir, :nama_orang_tua, :nomor_ijazah, :sekolah, :tahun, :file_path, NOW())";
+        (nama, nisn, tanggal_lahir, nama_orang_tua, nomor_ijazah, sekolah, tahun, file_path, file_hash, created_at) 
+        VALUES (:nama, :nisn, :tanggal_lahir, :nama_orang_tua, :nomor_ijazah, :sekolah, :tahun, :file_path, :file_hash, NOW())";
 
         $stmt = $this->db->prepare($sql);
 
@@ -26,7 +26,8 @@ class IjazahModel {
             ":nomor_ijazah"      => $data["nomor_ijazah"],
             ":sekolah"           => $data["sekolah"],
             ":tahun"             => $data["tahun"],
-            ":file_path"         => $data["file_path"]
+            ":file_path"         => $data["file_path"],
+            ":file_hash"         => $data["file_hash"] ?? null
         ]);
     }
 
