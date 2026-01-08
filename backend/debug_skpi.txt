@@ -1,7 +1,7 @@
-Request received at 2026-01-03 06:48:44
+Request received at 2026-01-08 05:15:33
 POST: Array
 (
-    [id] => 36
+    [id] => 41
 )
 
 FILES: Array
@@ -11,7 +11,27 @@ FILES: Array
             [name] => proposalku.pdf
             [full_path] => proposalku.pdf
             [type] => application/pdf
-            [tmp_name] => C:\Users\Lenovo\AppData\Local\Temp\phpFFFA.tmp
+            [tmp_name] => C:\Users\Lenovo\AppData\Local\Temp\php7B6A.tmp
+            [error] => 0
+            [size] => 335016
+        )
+
+)
+
+Request received at 2026-01-08 05:17:49
+POST: Array
+(
+    [id] => 40
+)
+
+FILES: Array
+(
+    [file_polisi] => Array
+        (
+            [name] => proposalku.pdf
+            [full_path] => proposalku.pdf
+            [type] => application/pdf
+            [tmp_name] => C:\Users\Lenovo\AppData\Local\Temp\php8F08.tmp
             [error] => 0
             [size] => 335016
         )

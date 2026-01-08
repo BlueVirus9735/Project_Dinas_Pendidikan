@@ -4,7 +4,7 @@ $DB_CONFIG = [
     'host' => 'localhost',
     'username' => 'root',
     'password' => '',
-    'database' => 'dinas_pendidikan_db',
+    'database' => 'ijazah_disdik_cirebon',
     'charset' => 'utf8mb4',
 ];
 try {

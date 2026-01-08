@@ -38,9 +38,9 @@ export const getIjazahList = async (params = {}) => {
   }
 };
 
-export const deleteIjazah = async (id) => {
+export const deleteIjazah = async (id, delete_reason) => {
   try {
-    const response = await api.post("/delete.php", { id });
+    const response = await api.post("/delete.php", { id, delete_reason });
     return response.data;
   } catch (error) {
     console.error("Error deleting ijazah:", error);

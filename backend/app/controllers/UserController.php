@@ -85,7 +85,7 @@ class UserController {
         $password = $input['password'];
         $role = $input['role'] ?? 'user';
         
-        $nonSchoolRoles = ['super_admin', 'admin_ijazah', 'admin_bos'];
+        $nonSchoolRoles = ['super_admin', 'admin_ijazah'];
         $sekolahId = null;
 
         if (!in_array($role, $nonSchoolRoles)) {
@@ -120,7 +120,7 @@ class UserController {
         }
         if (isset($input['role'])) $data['role'] = $input['role'];
         
-        $nonSchoolRoles = ['super_admin', 'admin_ijazah', 'admin_bos'];
+        $nonSchoolRoles = ['super_admin', 'admin_ijazah'];
         
         // Determine the effective role (new role or existing role if not changed)
         // Note: For simplicity in update, if role is passed, we check it. 

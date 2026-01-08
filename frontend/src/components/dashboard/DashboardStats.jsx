@@ -1,31 +1,22 @@
 import React from "react";
-import {
-  FileText,
-  Award,
-  Activity,
-  School,
-  PieChart,
-  Users,
-} from "lucide-react";
-import StatsCard from "./StatsCard";
+import { FileText, Award, Activity } from "lucide-react";
+import StatCard from "../common/StatCard";
 
 export default function DashboardStats({ user, stats }) {
   if (!stats) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="p-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {["super_admin", "admin_ijazah"].includes(user?.role) && (
         <>
-          <StatsCard
+          <StatCard
             title="Total Arsip Ijazah"
             value={stats.counts.total_ijazah}
-            icon={<FileText className="w-7 h-7 text-white" />}
-            gradient="from-blue-500 to-indigo-600"
-            trend="Realtime"
-            trendLabel="data terverifikasi"
-            footerValue="+12% bulan ini"
+            icon={FileText}
+            description="Total data terverifikasi dalam sistem"
+            color="blue"
           />
-          <StatsCard
+          <StatCard
             title="Dominasi Lulusan"
             value={
               stats.charts.ijazah_per_year.length > 0
@@ -34,21 +25,16 @@ export default function DashboardStats({ user, stats }) {
                   ).name
                 : "-"
             }
-            icon={<Award className="w-7 h-7 text-white" />}
-            gradient="from-cyan-500 to-blue-600"
-            trend="Tahun"
-            trendLabel="terbanyak"
-            footerValue="Puncak statistik"
+            icon={Award}
+            description="Tahun kelulusan terbanyak"
+            color="purple"
           />
-          <StatsCard
+          <StatCard
             title="Aktivitas Baru"
             value={stats.recent_docs.length}
-            icon={<Activity className="w-7 h-7 text-white" />}
-            gradient="from-indigo-500 to-violet-600"
-            trend="Dokumen"
-            trendLabel="baru ditambahkan"
-            footerValue="Dalam 7 hari terakhir"
-            isCount={true}
+            icon={Activity}
+            description="Dokumen terbaru 7 hari terakhir"
+            color="amber"
           />
         </>
       )}

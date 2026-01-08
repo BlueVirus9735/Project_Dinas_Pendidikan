@@ -2,10 +2,11 @@
 
 require_once __DIR__ . "/../models/IjazahModel.php";
 require_once __DIR__ . "/../helpers/response.php";
+require_once __DIR__ . "/../helpers/ActivityLogger.php";
 
 class IjazahController {
 
-    public function upload() {
+    public function upload($user = null) {
         if (!isset($_FILES["file"])) {
             jsonResponse(false, "File belum dipilih");
         }
@@ -70,6 +71,22 @@ class IjazahController {
             ]);
             
             if ($save) {
+                // Log activity
+                if ($user) {
+                    require_once __DIR__ . '/../config/database.php';
+                    global $conn;
+                    
+                    if (isset($conn)) {
+                        ActivityLogger::log(
+                            $conn,
+                            $user,
+                            'ijazah_upload',
+                            'ijazah',
+                            "Mengupload ijazah untuk siswa: {$nama} (NISN: {$nisn})"
+                        );
+                    }
+                }
+                
                 jsonResponse(true, "Ijazah berhasil diupload!", ["file" => $filename]);
             } else {
                 jsonResponse(false, "Gagal menyimpan ke database.");

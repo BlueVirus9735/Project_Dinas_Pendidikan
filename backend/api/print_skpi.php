@@ -8,6 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 require_once __DIR__ . "/../app/controllers/SkpiController.php";
+require_once __DIR__ . "/../app/helpers/ActivityLogger.php";
+require_once __DIR__ . "/../app/config/database.php";
 
 $controller = new SkpiController();
 

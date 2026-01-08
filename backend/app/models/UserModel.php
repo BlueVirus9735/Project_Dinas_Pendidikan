@@ -15,7 +15,7 @@ class UserModel {
             SELECT u.id, u.username, u.password, u.role, u.sekolah_id, u.nama_lengkap, 
                    s.jenjang, s.nama_sekolah, s.npsn, s.jumlah_siswa  
             FROM users u
-            LEFT JOIN sekolah_bos s ON u.sekolah_id = s.id
+            LEFT JOIN school s ON u.sekolah_id = s.id
             WHERE u.username = :username 
             LIMIT 1
         ");
@@ -40,7 +40,7 @@ class UserModel {
             SELECT u.id, u.username, u.role, u.sekolah_id, 
                    s.nama_sekolah, s.npsn, s.jenjang 
             FROM users u
-            LEFT JOIN sekolah_bos s ON u.sekolah_id = s.id
+            LEFT JOIN school s ON u.sekolah_id = s.id
             ORDER BY u.id DESC
         ");
         $stmt->execute();

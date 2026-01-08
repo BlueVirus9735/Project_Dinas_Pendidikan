@@ -22,8 +22,8 @@ try {
     $tahun   = isset($_GET['tahun']) ? $_GET['tahun'] : null;
 
     $sql = "SELECT i.* FROM ijazah i 
-            LEFT JOIN sekolah_bos s ON i.sekolah = s.nama_sekolah 
-            WHERE 1=1";
+            LEFT JOIN school s ON i.sekolah = s.nama_sekolah 
+            WHERE (i.is_deleted = 0 OR i.is_deleted IS NULL)";
     
     $types = "";
     $params = [];

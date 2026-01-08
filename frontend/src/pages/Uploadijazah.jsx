@@ -53,7 +53,7 @@ export default function UploadIjazah() {
         icon: "warning",
         title: "File Kosong",
         text: "Harap pilih file scan ijazah (PDF/Gambar) terlebih dahulu.",
-        confirmButtonColor: "#F59E0B",
+        confirmButtonColor: "#c5a017",
       });
       return;
     }
@@ -74,7 +74,7 @@ export default function UploadIjazah() {
           icon: "success",
           title: "Berhasil Disimpan!",
           text: "Data ijazah baru telah berhasil diarsipkan.",
-          confirmButtonColor: "#10B981",
+          confirmButtonColor: "#1a365d",
           timer: 2000,
         });
 
@@ -145,8 +145,23 @@ export default function UploadIjazah() {
     }
   };
   return (
-    <div className="p-2 max-w-5xl mx-auto min-h-screen transition-colors duration-300 space-y-8">
-      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-700 overflow-hidden">
+    <div className="p-4 max-w-6xl mx-auto min-h-screen transition-colors duration-300">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl shadow-gray-200/50 dark:shadow-none border-t-4 border-official-gold overflow-hidden">
+        {/* Header */}
+        <div className="p-6 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex items-center gap-4">
+          <div className="p-3 bg-deep-navy rounded-lg text-official-gold shadow-md">
+            <Upload className="w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-deep-navy dark:text-white font-serif">
+              Upload Arsip Baru
+            </h1>
+            <p className="text-sm text-gray-500">
+              Formulir digitalisasi dokumen ijazah resmi
+            </p>
+          </div>
+        </div>
+
         <form
           onSubmit={handleSubmit}
           className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-10"
@@ -154,10 +169,10 @@ export default function UploadIjazah() {
           <div className="lg:col-span-2 space-y-8">
             <div className="space-y-6">
               <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-700 pb-2">
-                <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg text-emerald-600 dark:text-emerald-400">
+                <div className="p-1.5 bg-deep-navy/10 rounded-lg text-deep-navy dark:text-blue-400">
                   <User className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white font-serif">
                   Identitas Siswa
                 </h3>
               </div>
@@ -170,8 +185,8 @@ export default function UploadIjazah() {
                   <input
                     type="text"
                     name="nama"
-                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400"
-                    placeholder="Masukan nama siswa"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-deep-navy focus:border-deep-navy outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400"
+                    placeholder="Masukan nama siswa sesuai ijazah"
                     value={formData.nama}
                     onChange={handleChange}
                     required
@@ -185,7 +200,7 @@ export default function UploadIjazah() {
                   <input
                     type="text"
                     name="nisn"
-                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-deep-navy focus:border-deep-navy outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 font-mono"
                     placeholder="Nomor Induk Siswa Nasional"
                     value={formData.nisn}
                     onChange={handleChange}
@@ -200,7 +215,7 @@ export default function UploadIjazah() {
                   <input
                     type="date"
                     name="tanggal_lahir"
-                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-deep-navy focus:border-deep-navy outline-none transition-all text-gray-900 dark:text-white"
                     value={formData.tanggal_lahir}
                     onChange={handleChange}
                     required
@@ -214,7 +229,7 @@ export default function UploadIjazah() {
                   <input
                     type="text"
                     name="nama_orang_tua"
-                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400"
+                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-deep-navy focus:border-deep-navy outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400"
                     placeholder="Nama lengkap orang tua"
                     value={formData.nama_orang_tua}
                     onChange={handleChange}
@@ -226,10 +241,10 @@ export default function UploadIjazah() {
 
             <div className="space-y-6">
               <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-700 pb-2">
-                <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-blue-600 dark:text-blue-400">
+                <div className="p-1.5 bg-deep-navy/10 rounded-lg text-deep-navy dark:text-blue-400">
                   <FileDigit className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white font-serif">
                   Detail Ijazah
                 </h3>
               </div>
@@ -244,7 +259,7 @@ export default function UploadIjazah() {
                     <input
                       type="text"
                       name="nomor_ijazah"
-                      className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 font-mono"
+                      className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-deep-navy focus:border-deep-navy outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 font-mono"
                       placeholder="DN-XX/D-XXXXXXX"
                       value={formData.nomor_ijazah}
                       onChange={handleChange}
@@ -266,7 +281,7 @@ export default function UploadIjazah() {
                       value={formData.sekolah}
                       onChange={handleChange}
                       readOnly={user?.role === "operator_sekolah"}
-                      className={`w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 ${
+                      className={`w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-deep-navy focus:border-deep-navy outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 ${
                         user?.role === "operator_sekolah"
                           ? "cursor-not-allowed opacity-70 bg-gray-100"
                           : ""
@@ -285,7 +300,7 @@ export default function UploadIjazah() {
                     <input
                       type="number"
                       name="tahun"
-                      className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400"
+                      className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-deep-navy focus:border-deep-navy outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400"
                       placeholder="2024"
                       value={formData.tahun}
                       onChange={handleChange}
@@ -296,18 +311,18 @@ export default function UploadIjazah() {
               </div>
             </div>
           </div>
+
           <div className="flex flex-col h-full space-y-6">
-            <div className="bg-gray-50 dark:bg-gray-700/20 p-6 rounded-2xl h-full flex flex-col">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <Upload className="w-5 h-5 text-emerald-500" />
-                Upload Scan
+            <div className="bg-gray-50 dark:bg-gray-700/20 p-6 rounded-xl h-full flex flex-col border border-gray-100 dark:border-gray-700">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2 font-serif">
+                Scan Dokumen
               </h3>
 
               <div
-                className={`flex-1 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-6 transition-all duration-300 relative overflow-hidden ${
+                className={`flex-1 border-2 border-dashed rounded-xl flex flex-col items-center justify-center p-6 transition-all duration-300 relative overflow-hidden ${
                   dragActive
-                    ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/10 scale-[0.98]"
-                    : "border-gray-300 dark:border-gray-600 hover:border-emerald-300 hover:bg-white dark:hover:bg-gray-700/50"
+                    ? "border-official-gold bg-official-gold/5 scale-[0.98]"
+                    : "border-gray-300 dark:border-gray-600 hover:border-official-gold hover:bg-white dark:hover:bg-gray-700/50"
                 }`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -323,8 +338,8 @@ export default function UploadIjazah() {
 
                 {file ? (
                   <div className="text-center animate-in zoom-in duration-300 z-0">
-                    <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
-                      <CheckCircle className="w-8 h-8" />
+                    <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/40 text-deep-navy dark:text-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
+                      <FileText className="w-8 h-8" />
                     </div>
                     <p className="font-bold text-gray-900 dark:text-white truncate max-w-[200px] mx-auto text-sm">
                       {file.name}
@@ -346,7 +361,7 @@ export default function UploadIjazah() {
                 ) : (
                   <div className="text-center z-0">
                     <div className="w-16 h-16 bg-white dark:bg-gray-800 text-gray-400 shadow-sm rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Upload className="w-8 h-8" />
+                      <Upload className="w-8 h-8 text-deep-navy" />
                     </div>
                     <p className="text-gray-900 dark:text-white font-bold mb-1">
                       Drag & Drop File
@@ -365,9 +380,6 @@ export default function UploadIjazah() {
                         PNG
                       </span>
                     </div>
-                    <p className="text-[10px] text-gray-400 mt-2">
-                      Maksimal 5MB
-                    </p>
                   </div>
                 )}
               </div>
@@ -376,7 +388,7 @@ export default function UploadIjazah() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-linear-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-bold shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:-translate-y-1 transition-all disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-deep-navy hover:bg-blue-900 text-white rounded-xl font-bold font-serif tracking-wide shadow-lg shadow-blue-900/30 hover:shadow-blue-900/50 hover:-translate-y-1 transition-all disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
@@ -385,8 +397,8 @@ export default function UploadIjazah() {
                     </>
                   ) : (
                     <>
-                      <Upload className="w-5 h-5" />
-                      <span>Simpan Arsip</span>
+                      <CheckCircle className="w-5 h-5 text-official-gold" />
+                      <span>Simpan Arsip Resmi</span>
                     </>
                   )}
                 </button>

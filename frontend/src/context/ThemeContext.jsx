@@ -3,20 +3,19 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  // Force dark mode permanently
+  const [theme] = useState("dark");
 
   useEffect(() => {
     const root = window.document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+    // Always add dark class
+    root.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  }, []);
 
+  // Keep toggleTheme for compatibility but it does nothing
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    // Disabled - always dark mode
   };
 
   return (
