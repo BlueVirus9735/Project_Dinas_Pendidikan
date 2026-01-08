@@ -11,6 +11,7 @@ import {
   FileDigit,
   School,
   ArrowLeft,
+  Search,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { useAuth } from "../context/AuthContext";
@@ -41,7 +42,59 @@ export default function UploadIjazah() {
   const [file, setFile] = useState(null);
   const [fileHash, setFileHash] = useState("");
   const [loading, setLoading] = useState(false);
+  const [checkLoading, setCheckLoading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+
+  const handleCheckNisn = async () => {
+    if (!formData.nisn) {
+      Swal.fire({
+        icon: "warning",
+        title: "NISN Kosong",
+        text: "Harap isi NISN terlebih dahulu.",
+      });
+      return;
+    }
+
+    setCheckLoading(true);
+    try {
+      const response = await api.get(
+        `/check-student.php?nisn=${formData.nisn}`
+      );
+      if (response.data.status) {
+        const student = response.data.data;
+        setFormData((prev) => ({
+          ...prev,
+          nama: student.nama,
+          tanggal_lahir: student.tanggal_lahir,
+          nama_orang_tua: student.nama_orang_tua,
+          sekolah: student.sekolah,
+        }));
+
+        Swal.fire({
+          icon: "success",
+          title: "Siswa Ditemukan",
+          text: `Data siswa ${student.nama} berhasil ditemukan via API.`,
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire({
+          icon: "info",
+          title: "Tidak Ditemukan",
+          text: "Data siswa belum terdaftar di database. Silakan isi manual.",
+        });
+      }
+    } catch (error) {
+      console.error("Error checking student:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Gagal mengecek data siswa.",
+      });
+    } finally {
+      setCheckLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -264,15 +317,30 @@ export default function UploadIjazah() {
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
                     NISN
                   </label>
-                  <input
-                    type="text"
-                    name="nisn"
-                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-deep-navy focus:border-deep-navy outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 font-mono"
-                    placeholder="Nomor Induk Siswa Nasional"
-                    value={formData.nisn}
-                    onChange={handleChange}
-                    required
-                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      name="nisn"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-deep-navy focus:border-deep-navy outline-none transition-all text-gray-900 dark:text-white placeholder-gray-400 font-mono"
+                      placeholder="Nomor Induk Siswa Nasional"
+                      value={formData.nisn}
+                      onChange={handleChange}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCheckNisn}
+                      disabled={checkLoading}
+                      className="px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-deep-navy dark:text-blue-300 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-2"
+                    >
+                      {checkLoading ? (
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                      ) : (
+                        <Search className="w-4 h-4" />
+                      )}
+                      <span className="text-sm font-bold">Cari</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div>

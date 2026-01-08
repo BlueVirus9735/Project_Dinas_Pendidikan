@@ -14,6 +14,9 @@ import {
   HardDrive,
   ClipboardList,
   Trash2,
+  UserPlus,
+  School,
+  GraduationCap,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -23,6 +26,7 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
   const location = useLocation();
   const [expandedMenus, setExpandedMenus] = useState({
     ijazah: true,
+    master: true,
     bos: true,
   });
 
@@ -48,10 +52,38 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
     },
     {
       type: "link",
+      name: "Data Siswa",
+      path: "/data-siswa",
+      icon: UserPlus,
+      roles: ["super_admin", "admin_ijazah", "operator_sekolah"],
+    },
+    {
+      type: "link",
       name: "Manajemen User",
       path: "/users",
       icon: Users,
       roles: ["super_admin"],
+    },
+    {
+      type: "group",
+      id: "master",
+      label: "Master Data",
+      icon: Database,
+      roles: ["super_admin", "admin_ijazah", "operator_sekolah"],
+      items: [
+        {
+          name: "Master Sekolah",
+          path: "/master-sekolah",
+          icon: School,
+          roles: ["super_admin"],
+        },
+        {
+          name: "Master Siswa",
+          path: "/master-siswa",
+          icon: GraduationCap,
+          roles: ["super_admin", "admin_ijazah", "operator_sekolah"],
+        },
+      ],
     },
     {
       type: "group",

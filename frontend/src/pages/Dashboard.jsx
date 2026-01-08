@@ -60,7 +60,7 @@ export default function Dashboard() {
         {[...Array(15)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-blue-400/30 dark:bg-blue-300/20 rounded-full animate-float"
+            className="absolute w-1 h-1 bg-blue-400/30 dark:bg-blue-300/20 rounded-full animate-float-up"
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
@@ -81,10 +81,10 @@ export default function Dashboard() {
           <div className="flex flex-col items-center justify-center py-32">
             <div className="relative">
               {/* Outer Glow Ring */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 rounded-full blur-xl animate-pulse"></div>
+              <div className="absolute -inset-4 bg-linear-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 rounded-full blur-xl animate-pulse"></div>
 
               {/* Spinning Border */}
-              <div className="relative w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 p-1 animate-spin-slow">
+              <div className="relative w-20 h-20 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 p-1 animate-spin-3s">
                 <div className="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center">
                   <Activity className="w-8 h-8 text-blue-500 animate-pulse" />
                 </div>
@@ -185,43 +185,6 @@ export default function Dashboard() {
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0) translateX(0);
-            opacity: 0;
-          }
-          10% {
-            opacity: 1;
-          }
-          90% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-100vh) translateX(30px);
-            opacity: 0;
-          }
-        }
-
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        .animate-float {
-          animation: float linear infinite;
-        }
-
-        .animate-spin-slow {
-          animation: spin-slow 3s linear infinite;
-        }
-      `}</style>
     </div>
   );
 }

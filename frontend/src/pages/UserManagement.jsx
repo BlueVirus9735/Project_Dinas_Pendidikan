@@ -26,6 +26,7 @@ export default function UserManagement() {
     sekolah_id: "",
     nama_sekolah: "",
     npsn: "",
+    alamat: "",
     jenjang: "SD",
     jumlah_siswa: 0,
   });
@@ -90,6 +91,7 @@ export default function UserManagement() {
         sekolah_id: "",
         nama_sekolah: "",
         npsn: "",
+        alamat: "",
         jenjang: "SD",
       });
       fetchUsers();
@@ -112,6 +114,7 @@ export default function UserManagement() {
       sekolah_id: user.sekolah_id || "",
       nama_sekolah: user.nama_sekolah || "",
       npsn: user.npsn || "",
+      alamat: user.alamat || "",
       jenjang: user.jenjang || "SD",
       jumlah_siswa: user.jumlah_siswa || 0,
     });
@@ -164,6 +167,7 @@ export default function UserManagement() {
               sekolah_id: "",
               nama_sekolah: "",
               npsn: "",
+              alamat: "",
               jenjang: "SD",
               jumlah_siswa: 0,
             });
@@ -481,6 +485,23 @@ export default function UserManagement() {
                           required={isNewSchool}
                         />
                       </div>
+                      <div className="mt-2">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
+                          Alamat Sekolah
+                        </label>
+                        <textarea
+                          rows="2"
+                          value={formData.alamat}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              alamat: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-none"
+                          placeholder="Alamat Lengkap Sekolah"
+                        ></textarea>
+                      </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
@@ -514,8 +535,6 @@ export default function UserManagement() {
                           >
                             <option value="SD">SD</option>
                             <option value="SMP">SMP</option>
-                            <option value="SMA">SMA</option>
-                            <option value="SMK">SMK</option>
                           </select>
                         </div>
                       </div>

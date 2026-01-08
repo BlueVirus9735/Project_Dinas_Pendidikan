@@ -9,7 +9,7 @@ import Login from "../pages/Login";
 import Home from "../pages/Home";
 import MainLayout from "../layouts/MainLayout";
 import DataIjazah from "../pages/DataIjazah";
-import UploadIjazah from "../pages/UploadIjazah";
+import UploadIjazah from "../pages/Uploadijazah";
 import Dashboard from "../pages/Dashboard";
 import UserManagement from "../pages/UserManagement";
 import { AuthProvider, useAuth } from "../context/AuthContext";
@@ -18,6 +18,9 @@ import Settings from "../pages/Settings";
 import Backup from "../pages/Backup";
 import ActivityLogs from "../pages/ActivityLogs";
 import Trash from "../pages/Trash";
+import DataSiswa from "../pages/DataSiswa";
+import MasterSekolah from "../pages/MasterSekolah";
+import MasterSiswa from "../pages/MasterSiswa";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const authContext = useAuth();
@@ -102,6 +105,22 @@ export default function AppRouter() {
             }
           />
           <Route
+            path="/data-siswa"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "admin_ijazah",
+                  "operator_sekolah",
+                ]}
+              >
+                <MainLayout>
+                  <DataSiswa />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/upload-ijazah"
             element={
               <ProtectedRoute
@@ -161,6 +180,32 @@ export default function AppRouter() {
               <ProtectedRoute allowedRoles={["super_admin"]}>
                 <MainLayout>
                   <ActivityLogs />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/master-sekolah"
+            element={
+              <ProtectedRoute allowedRoles={["super_admin"]}>
+                <MainLayout>
+                  <MasterSekolah />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/master-siswa"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "super_admin",
+                  "admin_ijazah",
+                  "operator_sekolah",
+                ]}
+              >
+                <MainLayout>
+                  <MasterSiswa />
                 </MainLayout>
               </ProtectedRoute>
             }
