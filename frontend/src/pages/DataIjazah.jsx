@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { getIjazahList, deleteIjazah, api } from "../services/api";
+import {
+  getIjazahList,
+  deleteIjazah,
+  verifyIjazah,
+  api,
+} from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import Swal from "sweetalert2";
 import { LayoutGrid, List } from "lucide-react";
@@ -133,6 +138,49 @@ export default function DataIjazah() {
     }
   };
 
+  const handleVerify = async (id) => {
+    try {
+      const result = await Swal.fire({
+        title: "Verifikasi Ijazah?",
+        text: "Apakah Anda yakin ingin mengubah status verifikasi ijazah ini?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#8B5CF6",
+        cancelButtonColor: "#6B7280",
+        confirmButtonText: "Ya, Verifikasi!",
+        cancelButtonText: "Batal",
+      });
+
+      if (result.isConfirmed) {
+        const response = await verifyIjazah(id);
+
+        if (response.status) {
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil!",
+            text: response.message,
+            timer: 2000,
+            showConfirmButton: false,
+          });
+          loadData(); // Refresh data
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Gagal!",
+            text: response.message,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error verifying ijazah:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: "Terjadi kesalahan saat memverifikasi ijazah",
+      });
+    }
+  };
+
   const filteredData = data.filter(
     (item) =>
       item.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -231,6 +279,7 @@ export default function DataIjazah() {
               item={item}
               user={user}
               onDelete={handleDeleteClick}
+              onVerify={handleVerify}
               onRefresh={loadData}
             />
           ))}

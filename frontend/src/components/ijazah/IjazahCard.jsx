@@ -1,8 +1,22 @@
 import React from "react";
-import { Eye, Download, Trash2, CheckCircle } from "lucide-react";
+import {
+  Eye,
+  Download,
+  Trash2,
+  CheckCircle,
+  ShieldCheck,
+  ShieldAlert,
+} from "lucide-react";
 
-export default function IjazahCard({ item, user, onDelete, onRefresh }) {
-  const isVerified = item.status_verifikasi === "terverifikasi";
+export default function IjazahCard({
+  item,
+  user,
+  onDelete,
+  onVerify,
+  onRefresh,
+}) {
+  const isVerified =
+    item.status_verifikasi == 1 || item.status_verifikasi === "terverifikasi";
 
   const handlePreview = () => {
     const token = localStorage.getItem("token");
@@ -63,6 +77,23 @@ export default function IjazahCard({ item, user, onDelete, onRefresh }) {
             <Download className="w-5 h-5" />
             <div className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
           </button>
+
+          {/* Verify Button - Only for admin_ijazah and super_admin */}
+          {(user?.role === "admin_ijazah" || user?.role === "super_admin") && (
+            <button
+              onClick={() => onVerify(item.id)}
+              className={`relative p-3.5 rounded-xl text-white transition-all duration-300 hover:scale-110 shadow-xl group/btn ${
+                isVerified
+                  ? "bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 hover:shadow-amber-500/50"
+                  : "bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 hover:shadow-purple-500/50"
+              }`}
+              title={isVerified ? "Batalkan Verifikasi" : "Verifikasi Ijazah"}
+            >
+              <ShieldCheck className="w-5 h-5" />
+              <div className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
+            </button>
+          )}
+
           {user?.role === "super_admin" && (
             <button
               onClick={() => onDelete(item.id)}

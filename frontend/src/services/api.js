@@ -48,6 +48,16 @@ export const deleteIjazah = async (id, delete_reason) => {
   }
 };
 
+export const verifyIjazah = async (id) => {
+  try {
+    const response = await api.post("/verify-ijazah.php", { id });
+    return response.data;
+  } catch (error) {
+    console.error("Error verifying ijazah:", error);
+    throw error;
+  }
+};
+
 export const updateIjazah = async (data) => {
   try {
     const response = await api.post("/update.php", data);
