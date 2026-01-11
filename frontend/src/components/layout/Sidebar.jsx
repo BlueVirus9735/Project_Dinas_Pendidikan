@@ -112,7 +112,12 @@ export default function Sidebar({ isSidebarOpen, setIsSidebarOpen }) {
           name: "Upload Baru",
           path: "/upload-ijazah",
           icon: Upload,
-          roles: ["admin_ijazah", "operator_sekolah", "operator_ijazah"],
+          roles: [
+            "super_admin",
+            "admin_ijazah",
+            "operator_sekolah",
+            "operator_ijazah",
+          ],
         },
       ],
     },

@@ -5,22 +5,22 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import Login from "../pages/Login";
 import Home from "../pages/Home";
-import MainLayout from "../layouts/MainLayout";
-import DataIjazah from "../pages/DataIjazah";
-import UploadIjazah from "../pages/Uploadijazah";
-import Dashboard from "../pages/Dashboard";
-import UserManagement from "../pages/UserManagement";
-import { AuthProvider, useAuth } from "../context/AuthContext";
+import Login from "../pages/Login";
+import Trash from "../pages/Trash";
+import Backup from "../pages/Backup";
 import Laporan from "../pages/Laporan";
 import Settings from "../pages/Settings";
-import Backup from "../pages/Backup";
-import ActivityLogs from "../pages/ActivityLogs";
-import Trash from "../pages/Trash";
+import Dashboard from "../pages/Dashboard";
 import DataSiswa from "../pages/DataSiswa";
-import MasterSekolah from "../pages/MasterSekolah";
+import DataIjazah from "../pages/DataIjazah";
+import MainLayout from "../layouts/MainLayout";
 import MasterSiswa from "../pages/MasterSiswa";
+import UploadIjazah from "../pages/Uploadijazah";
+import ActivityLogs from "../pages/ActivityLogs";
+import MasterSekolah from "../pages/MasterSekolah";
+import UserManagement from "../pages/UserManagement";
+import { AuthProvider, useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const authContext = useAuth();
@@ -125,6 +125,7 @@ export default function AppRouter() {
             element={
               <ProtectedRoute
                 allowedRoles={[
+                  "super_admin",
                   "admin_ijazah",
                   "operator_sekolah",
                   "operator_ijazah",

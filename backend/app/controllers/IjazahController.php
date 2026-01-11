@@ -48,10 +48,22 @@ class IjazahController {
         }
 
         $file = $_FILES["file"];
-        $ext = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+        // Validasi Ukuran File (Max 5MB)
+        if ($file['size'] > 5 * 1024 * 1024) {
+            jsonResponse(false, "Ukuran file terlalu besar (Maksimal 5MB).");
+        }
 
-        if (!in_array($ext, ["pdf", "jpg", "jpeg", "png"])) {
-            jsonResponse(false, "Format file tidak didukung (hanya PDF/JPG/PNG).");
+        $ext = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
+        
+        // Validasi MIME Type (Cek isi file asli)
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($file["tmp_name"]);
+        
+        $allowedExtensions = ["pdf", "jpg", "jpeg", "png"];
+        $allowedMimeTypes = ["application/pdf", "image/jpeg", "image/png"];
+
+        if (!in_array($ext, $allowedExtensions) || !in_array($mimeType, $allowedMimeTypes)) {
+            jsonResponse(false, "Format file tidak valid atau terdeteksi berbahaya. Hanya PDF/JPG/PNG yang diperbolehkan.");
         }
 
         $uploadDir = __DIR__ . "/../../uploads/ijazah/";
