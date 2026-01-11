@@ -12,7 +12,6 @@ require_once __DIR__ . "/../app/config/database.php";
 require_once __DIR__ . "/../app/helpers/response.php";
 require_once __DIR__ . "/../app/helpers/AuthMiddleware.php";
 
-// Check authentication
 $user = AuthMiddleware::check();
 
 $input = json_decode(file_get_contents("php://input"), true);
@@ -25,7 +24,6 @@ $nomorIjazah = $conn->real_escape_string(trim($input['nomor_ijazah']));
 $fileHash = $conn->real_escape_string(trim($input['file_hash']));
 
 try {
-    // Check 1: Nomor ijazah duplicate
     $queryNomor = "SELECT id, nama, sekolah FROM ijazah 
                    WHERE nomor_ijazah = '$nomorIjazah' 
                    AND (is_deleted = 0 OR is_deleted IS NULL)";
@@ -40,7 +38,6 @@ try {
         ]);
     }
     
-    // Check 2: File hash duplicate (same file content)
     $queryHash = "SELECT id, nama, nomor_ijazah, sekolah FROM ijazah 
                   WHERE file_hash = '$fileHash' 
                   AND (is_deleted = 0 OR is_deleted IS NULL)";
@@ -55,7 +52,6 @@ try {
         ]);
     }
     
-    // No duplicate found
     jsonResponse(true, "No duplicate found", [
         'duplicate' => false
     ]);

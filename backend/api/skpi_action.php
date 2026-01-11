@@ -20,7 +20,6 @@ $action = $_GET['action'] ?? '';
 switch ($action) {
     case 'request':
         $controller->request();
-        // Log SKPI request
         if ($user && isset($conn)) {
             $id = $_POST['id'] ?? 'unknown';
             ActivityLogger::log($conn, $user, 'skpi_request', 'skpi', "Mengajukan SKPI untuk ijazah ID: {$id}");
@@ -28,7 +27,6 @@ switch ($action) {
         break;
     case 'approve':
         $controller->approve();
-        // Log SKPI approval
         if ($user && isset($conn)) {
             $input = json_decode(file_get_contents('php://input'), true);
             $id = $input['id'] ?? 'unknown';
@@ -37,7 +35,6 @@ switch ($action) {
         break;
     case 'reject':
         $controller->reject();
-        // Log SKPI rejection
         if ($user && isset($conn)) {
             $input = json_decode(file_get_contents('php://input'), true);
             $id = $input['id'] ?? 'unknown';

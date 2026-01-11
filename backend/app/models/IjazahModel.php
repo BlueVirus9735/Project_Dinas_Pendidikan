@@ -37,6 +37,12 @@ class IjazahModel {
         return $stmt->fetch();
     }
 
+    public function findByNisn($nisn) {
+        $stmt = $this->db->prepare("SELECT * FROM ijazah WHERE nisn = :nisn AND (is_deleted = 0 OR is_deleted IS NULL) LIMIT 1");
+        $stmt->execute([':nisn' => $nisn]);
+        return $stmt->fetch();
+    }
+
     public function countAll() {
         $stmt = $this->db->query("SELECT COUNT(*) as total FROM ijazah");
         return $stmt->fetchColumn();

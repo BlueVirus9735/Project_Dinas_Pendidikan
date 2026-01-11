@@ -5,8 +5,7 @@ require_once __DIR__ . '/../app/models/StudentModel.php';
 require_once __DIR__ . '/../app/helpers/response.php';
 require_once __DIR__ . '/../app/helpers/AuthMiddleware.php';
 
-// Optional: Require authentication
-// $user = AuthMiddleware::check();
+$user = AuthMiddleware::check();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(false, 'Method not allowed');
@@ -19,10 +18,18 @@ if (!$nisn) {
 }
 
 $model = new StudentModel();
-$student = $model->findByNisn($nisn);
+$student = null;
+
+if ($user && isset($user['role']) && $user['role'] === 'operator_sekolah' && !empty($user['nama_sekolah'])) {
+    $student = $model->findByNisnAndSchool($nisn, $user['nama_sekolah']);
+    if (!$student) {
+        jsonResponse(false, 'Siswa tidak ditemukan di sekolah Anda (' . $user['nama_sekolah'] . ')');
+    }
+} else {
+    $student = $model->findByNisn($nisn);
+}
 
 if ($student) {
-    // Determine parent name (Priority: Father > Mother > Guardian)
     $parentName = $student['nama_ayah'] ? $student['nama_ayah'] : ($student['nama_ibu'] ? $student['nama_ibu'] : $student['nama_wali']);
 
     $responseData = [

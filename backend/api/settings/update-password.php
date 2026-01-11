@@ -13,7 +13,6 @@ require_once __DIR__ . '/../../app/helpers/ActivityLogger.php';
 header('Content-Type: application/json');
 
 try {
-    // Authenticate user
     $user = AuthMiddleware::check();
     
     if (!$user) {
@@ -22,7 +21,6 @@ try {
     
     $userId = $user['id'];
     
-    // Get POST data
     $input = json_decode(file_get_contents('php://input'), true);
     $currentPassword = $input['current_password'] ?? '';
     $newPassword = $input['new_password'] ?? '';
@@ -35,7 +33,6 @@ try {
         throw new Exception('Password baru minimal 6 karakter');
     }
     
-    // Verify current password
     $stmt = $conn->prepare("SELECT password FROM users WHERE id = ?");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
@@ -50,13 +47,11 @@ try {
         throw new Exception('Password lama tidak sesuai');
     }
     
-    // Update password
     $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
     $stmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
     $stmt->bind_param("si", $hashedPassword, $userId);
     
     if ($stmt->execute()) {
-        // Log password change
         ActivityLogger::log($conn, $user, 'password_change', 'settings', 'Mengubah password akun');
         
         echo json_encode([

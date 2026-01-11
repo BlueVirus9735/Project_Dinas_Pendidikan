@@ -11,8 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . "/../../app/config/database.php";
 require_once __DIR__ . "/../../app/helpers/response.php";
 
-// NO AUTH REQUIRED - Public endpoint
-
 $input = json_decode(file_get_contents("php://input"), true);
 
 if (!isset($input['nomor_ijazah']) || empty(trim($input['nomor_ijazah']))) {
@@ -22,7 +20,6 @@ if (!isset($input['nomor_ijazah']) || empty(trim($input['nomor_ijazah']))) {
 $nomorIjazah = $conn->real_escape_string(trim($input['nomor_ijazah']));
 
 try {
-    // Query ijazah - only return verified ijazah, exclude soft deleted
     $query = "SELECT nama, sekolah, tahun, status_verifikasi 
               FROM ijazah 
               WHERE nomor_ijazah = '$nomorIjazah' 
@@ -38,7 +35,6 @@ try {
     
     $data = $result->fetch_assoc();
     
-    // Return limited data for privacy
     jsonResponse(true, "Ijazah valid dan terverifikasi", [
         'nama' => $data['nama'],
         'sekolah' => $data['sekolah'],

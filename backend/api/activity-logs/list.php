@@ -13,19 +13,16 @@ require_once __DIR__ . '/../../app/helpers/ActivityLogger.php';
 header('Content-Type: application/json');
 
 try {
-    // Authenticate user
     $user = AuthMiddleware::check();
     
     if (!$user) {
         throw new Exception('User tidak terautentikasi');
     }
     
-    // Only super_admin can view activity logs
     if ($user['role'] !== 'super_admin') {
         throw new Exception('Hanya Super Admin yang dapat melihat riwayat aktivitas');
     }
     
-    // Get filters from query params
     $filters = [];
     
     if (isset($_GET['user_id'])) {
@@ -50,7 +47,6 @@ try {
     
     $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 100;
     
-    // Get logs
     $logs = ActivityLogger::getRecentLogs($conn, $limit, $filters);
     
     echo json_encode([

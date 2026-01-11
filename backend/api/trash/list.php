@@ -12,7 +12,6 @@ require_once __DIR__ . "/../../app/config/database.php";
 require_once __DIR__ . "/../../app/helpers/response.php";
 require_once __DIR__ . "/../../app/helpers/AuthMiddleware.php";
 
-// Check super admin access
 try {
     $user = AuthMiddleware::check();
     
@@ -20,13 +19,11 @@ try {
         jsonResponse(false, "Hanya Super Admin yang dapat mengakses trash");
     }
     
-    // Check if columns exist (migration check)
     $checkColumns = $conn->query("SHOW COLUMNS FROM ijazah LIKE 'is_deleted'");
     if ($checkColumns->num_rows === 0) {
         jsonResponse(false, "Database migration belum dijalankan. Silakan import soft_delete_migration.sql terlebih dahulu.");
     }
     
-    // Get deleted ijazah within 90 days
     $query = "SELECT 
                 i.*,
                 u.username as deleted_by_username,

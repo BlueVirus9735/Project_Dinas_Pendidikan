@@ -24,14 +24,33 @@ class SkpiController {
              exit;
         }
 
+        if ($_FILES['file_polisi']['size'] > 2 * 1024 * 1024) {
+            http_response_code(400);
+            echo json_encode(['status' => false, 'message' => 'Ukuran file terlalu besar (Maksimal 2MB)']);
+            exit;
+        }
+        $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+        $allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        
+        $fileInfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $fileInfo->file($_FILES['file_polisi']['tmp_name']);
+        
+        $originalExt = strtolower(pathinfo($_FILES['file_polisi']['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($originalExt, $allowedExtensions) || !in_array($mimeType, $allowedMimeTypes)) {
+            http_response_code(400);
+            echo json_encode(['status' => false, 'message' => 'Format file tidak valid. Hanya diperbolehkan PDF, JPG, JPEG, atau PNG.']);
+            exit;
+        }
+
         $uploadDir = __DIR__ . '/../../../frontend/public/uploads/skpi/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
-        $ext = pathinfo($_FILES['file_polisi']['name'], PATHINFO_EXTENSION);
-        $filename = 'SKPI_' . $id . '_' . time() . '.' . $ext;
-        if (move_uploaded_file($_FILES['file_polisi']['tmp_name'], $uploadDir . $filename)) {
+        $safeFilename = 'SKPI_' . $id . '_' . bin2hex(random_bytes(8)) . '.' . $originalExt;
+
+        if (move_uploaded_file($_FILES['file_polisi']['tmp_name'], $uploadDir . $safeFilename)) {
             $model = new IjazahModel();
-            $model->updateSkpiStatus($id, 'pending', 'uploads/skpi/' . $filename);
+            $model->updateSkpiStatus($id, 'pending', 'uploads/skpi/' . $safeFilename);
             echo json_encode(['status' => true, 'message' => 'Pengajuan Berhasil']);
         } else {
              http_response_code(500); 

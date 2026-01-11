@@ -9,5 +9,4 @@ AuthMiddleware::check();
 
 $controller = new DashboardController();
 $controller->getStats();
-// echo json_encode(["status" => "success", "data" => []]);
 ?>

@@ -13,19 +13,16 @@ require_once __DIR__ . '/../../app/helpers/ActivityLogger.php';
 header('Content-Type: application/json');
 
 try {
-    // Authenticate user
     $user = AuthMiddleware::check();
     
     if (!$user) {
         throw new Exception('User tidak terautentikasi');
     }
     
-    // Only super_admin can view activity stats
     if ($user['role'] !== 'super_admin') {
         throw new Exception('Hanya Super Admin yang dapat melihat statistik aktivitas');
     }
     
-    // Get statistics
     $stats = ActivityLogger::getStats($conn);
     
     echo json_encode([

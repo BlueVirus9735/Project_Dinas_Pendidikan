@@ -24,6 +24,29 @@ class IjazahController {
             jsonResponse(false, "Semua field wajib diisi.");
         }
 
+        require_once __DIR__ . "/../models/StudentModel.php";
+        $studentModel = new StudentModel();
+
+        $globalStudent = $studentModel->findByNisn($nisn);
+        if (!$globalStudent) {
+            jsonResponse(false, "Data siswa dengan NISN $nisn tidak ditemukan di database. Pastikan data siswa sudah diinput oleh Operator.");
+        }
+
+        if ($user && isset($user['role']) && $user['role'] === 'operator_sekolah' && !empty($user['nama_sekolah'])) {
+            $sekolah = $user['nama_sekolah'];
+            
+            $validStudent = $studentModel->findByNisnAndSchool($nisn, $sekolah);
+            
+            if (!$validStudent) {
+                jsonResponse(false, "Siswa dengan NISN $nisn tidak ditemukan di sekolah Anda ($sekolah).");
+            }
+        }
+    
+        $existingIjazah = (new IjazahModel())->findByNisn($nisn);
+        if ($existingIjazah) {
+            jsonResponse(false, "Ijazah untuk siswa dengan NISN $nisn sudah pernah diterbitkan (Nomor Ijazah: " . $existingIjazah['nomor_ijazah'] . ").");
+        }
+
         $file = $_FILES["file"];
         $ext = strtolower(pathinfo($file["name"], PATHINFO_EXTENSION));
 

@@ -12,13 +12,10 @@ class TempTokenModel {
      * Generate temporary token
      */
     public function generateToken($userId, $fileId, $action = 'view', $expiryMinutes = 5) {
-        // Generate random token
         $tempToken = bin2hex(random_bytes(32));
         
-        // Calculate expiry time
         $expiresAt = date('Y-m-d H:i:s', strtotime("+{$expiryMinutes} minutes"));
         
-        // Insert to database
         $stmt = $this->conn->prepare("
             INSERT INTO {$this->table} (temp_token, user_id, file_id, action, expires_at)
             VALUES (?, ?, ?, ?, ?)

@@ -13,7 +13,6 @@ require_once __DIR__ . '/../app/controllers/IjazahController.php';
 require_once __DIR__ . '/../app/helpers/AuthMiddleware.php';
 require_once __DIR__ . '/../app/helpers/ActivityLogger.php';
 
-// Handle token from query parameter
 if (isset($_GET['token']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
     $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $_GET['token'];
 }
@@ -34,11 +33,9 @@ if (!$res || !isset($res['filename']) || !isset($res['filedata'])) {
 }
 
 $filename = $res['filename'];
-$encryptedData = $res['filedata']; // Already decrypted by controller
+$encryptedData = $res['filedata'];
 
-// Log download activity
 if ($user) {
-    // Get ijazah data for logging
     $stmt = $conn->prepare("SELECT nama, nisn FROM ijazah WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -55,9 +52,7 @@ if ($user) {
     $stmt->close();
 }
 
-// Log download activity
 if ($user) {
-    // Get ijazah data for logging
     $stmt = $conn->prepare("SELECT nama, nisn FROM ijazah WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -74,11 +69,10 @@ if ($user) {
     $stmt->close();
 }
 
-// Set headers untuk download
 header('Content-Type: application/octet-stream');
 header('Content-Disposition: attachment; filename="' . $filename . '"');
 header('Content-Length: ' . strlen($encryptedData));
 
-echo $encryptedData; // Already decrypted by IjazahController
+echo $encryptedData;
 exit;
 

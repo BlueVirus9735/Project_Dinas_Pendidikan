@@ -13,7 +13,6 @@ require_once __DIR__ . "/../../app/helpers/response.php";
 require_once __DIR__ . "/../../app/helpers/AuthMiddleware.php";
 require_once __DIR__ . "/../../app/helpers/ActivityLogger.php";
 
-// Check super admin access
 $user = AuthMiddleware::check();
 
 if ($user['role'] !== 'super_admin') {
@@ -29,7 +28,6 @@ if (!isset($input['id'])) {
 $id = $conn->real_escape_string($input['id']);
 
 try {
-    // Get deleted ijazah data
     $query = "SELECT i.*, u.username as deleted_by_username 
               FROM ijazah i
               LEFT JOIN users u ON i.deleted_by = u.id
@@ -43,12 +41,10 @@ try {
     
     $data = $result->fetch_assoc();
     
-    // Restore ijazah
     $stmt = $conn->prepare("UPDATE ijazah SET is_deleted = 0, deleted_at = NULL, deleted_by = NULL, delete_reason = NULL WHERE id = ?");
     $stmt->bind_param("i", $id);
     
     if ($stmt->execute()) {
-        // Log restore activity
         ActivityLogger::log(
             $conn,
             $user,

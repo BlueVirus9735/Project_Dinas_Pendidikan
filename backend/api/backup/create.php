@@ -13,40 +13,33 @@ require_once __DIR__ . '/../../app/helpers/ActivityLogger.php';
 header('Content-Type: application/json');
 
 try {
-    // Authenticate user
     $user = AuthMiddleware::check();
     
     if (!$user) {
         throw new Exception('User tidak terautentikasi');
     }
     
-    // Check if user is super_admin or admin_ijazah
     if (!in_array($user['role'], ['super_admin', 'admin_ijazah'])) {
         throw new Exception('Anda tidak memiliki akses untuk membuat backup');
     }
     
-    // Database configuration
     global $DB_CONFIG;
     
-    // Create backups directory if not exists
     $backupDir = __DIR__ . '/../../backups';
     if (!file_exists($backupDir)) {
         @mkdir($backupDir, 0755, true);
     }
     
-    // Generate backup filename
     $timestamp = date('Y-m-d_H-i-s');
     $backupFile = $backupDir . '/backup_' . $timestamp . '.sql';
     
-    // Try mysqldump first (will fail on Windows without proper PATH)
     $mysqldumpSuccess = false;
     
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-        // Windows: Try to find mysqldump in Laragon
         $possiblePaths = [
             'C:\\laragon\\bin\\mysql\\mysql-8.0.30\\bin\\mysqldump.exe',
             'C:\\laragon\\bin\\mysql\\mysql-5.7.33\\bin\\mysqldump.exe',
-            'mysqldump' // Try system PATH
+            'mysqldump'
         ];
         
         foreach ($possiblePaths as $mysqldumpPath) {
@@ -71,14 +64,11 @@ try {
         }
     }
     
-    // If mysqldump failed or file is too small, use PHP fallback
     if (!$mysqldumpSuccess || !file_exists($backupFile) || filesize($backupFile) < 1000) {
-        // Delete failed backup file if exists
         if (file_exists($backupFile)) {
             @unlink($backupFile);
         }
         
-        // Create backup using PHP
         $tables = [];
         $result = $conn->query("SHOW TABLES");
         while ($row = $result->fetch_row()) {
@@ -127,7 +117,6 @@ try {
     $fileSize = filesize($backupFile);
     $filename = basename($backupFile);
     
-    // Log successful backup creation
     ActivityLogger::log($conn, $user, 'backup_create', 'backup', "Membuat backup database: {$filename}");
     
     echo json_encode([

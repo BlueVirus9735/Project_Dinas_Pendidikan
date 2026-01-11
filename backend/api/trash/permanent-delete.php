@@ -13,7 +13,6 @@ require_once __DIR__ . "/../../app/helpers/response.php";
 require_once __DIR__ . "/../../app/helpers/AuthMiddleware.php";
 require_once __DIR__ . "/../../app/helpers/ActivityLogger.php";
 
-// Check super admin access
 $user = AuthMiddleware::check();
 
 if ($user['role'] !== 'super_admin') {
@@ -29,7 +28,6 @@ if (!isset($input['id'])) {
 $id = $conn->real_escape_string($input['id']);
 
 try {
-    // Get deleted ijazah data
     $query = "SELECT * FROM ijazah WHERE id = '$id' AND is_deleted = 1";
     $result = $conn->query($query);
     
@@ -40,15 +38,12 @@ try {
     $data = $result->fetch_assoc();
     $filePath = "../../uploads/ijazah/" . $data['file_path'];
     
-    // PERMANENT DELETE from database
     $conn->query("DELETE FROM ijazah WHERE id='$id'");
     
-    // Delete file permanently
     if (file_exists($filePath)) {
         unlink($filePath);
     }
     
-    // Log CRITICAL activity
     ActivityLogger::log(
         $conn,
         $user,

@@ -16,6 +16,15 @@ class StudentModel {
         return $stmt->fetch();
     }
 
+    public function findByNisnAndSchool($nisn, $namaSekolah) {
+        $stmt = $this->db->prepare("SELECT * FROM students WHERE nisn = :nisn AND sekolah_asal = :sekolah_asal LIMIT 1");
+        $stmt->execute([
+            ':nisn' => $nisn,
+            ':sekolah_asal' => $namaSekolah
+        ]);
+        return $stmt->fetch();
+    }
+
     public function create($data) {
         $sql = "INSERT INTO students 
         (nisn, nama, tanggal_lahir, nama_ayah, nama_ibu, nama_wali, sekolah_asal, jenjang) 

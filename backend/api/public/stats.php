@@ -11,20 +11,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . "/../../app/config/database.php";
 require_once __DIR__ . "/../../app/helpers/response.php";
 
-// NO AUTH REQUIRED - Public stats endpoint
-
 try {
-    // Get total sekolah
     $sekolahQuery = "SELECT COUNT(DISTINCT sekolah) as total FROM ijazah WHERE (is_deleted = 0 OR is_deleted IS NULL)";
     $sekolahResult = $conn->query($sekolahQuery);
     $totalSekolah = $sekolahResult->fetch_assoc()['total'];
 
-    // Get total ijazah (verified only)
     $ijazahQuery = "SELECT COUNT(*) as total FROM ijazah WHERE status_verifikasi = 1 AND (is_deleted = 0 OR is_deleted IS NULL)";
     $ijazahResult = $conn->query($ijazahQuery);
     $totalIjazah = $ijazahResult->fetch_assoc()['total'];
 
-    // Get total siswa (same as ijazah)
     $totalSiswa = $totalIjazah;
 
     jsonResponse(true, "Stats berhasil dimuat", [

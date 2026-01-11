@@ -14,10 +14,8 @@ require_once __DIR__ . '/../app/models/TempTokenModel.php';
 require_once __DIR__ . '/../app/helpers/AuthMiddleware.php';
 require_once __DIR__ . '/../app/helpers/response.php';
 
-// Authenticate user
 $user = AuthMiddleware::check();
 
-// Get request data
 $data = json_decode(file_get_contents("php://input"), true);
 
 if (!isset($data['file_id']) || !isset($data['action'])) {
@@ -31,14 +29,13 @@ if ($fileId <= 0) {
     sendResponse(false, "File ID tidak valid", null, 400);
 }
 
-// Generate temporary token
 $tempTokenModel = new TempTokenModel($conn);
 $tempToken = $tempTokenModel->generateToken($user['id'], $fileId, $action, 5);
 
 if ($tempToken) {
     sendResponse(true, "Temporary token berhasil dibuat", [
         'temp_token' => $tempToken,
-        'expires_in' => 300 // 5 minutes in seconds
+        'expires_in' => 300
     ]);
 } else {
     sendResponse(false, "Gagal membuat temporary token", null, 500);

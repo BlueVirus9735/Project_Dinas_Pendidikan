@@ -16,7 +16,6 @@ if (!isset($input['id'])) {
     jsonResponse(false, "ID tidak ditemukan dalam request");
 }
 
-// Validate delete reason (mandatory)
 $deleteReason = $input['delete_reason'] ?? null;
 
 if (!$deleteReason || strlen(trim($deleteReason)) < 10) {
@@ -25,7 +24,6 @@ if (!$deleteReason || strlen(trim($deleteReason)) < 10) {
 
 $id = $conn->real_escape_string($input['id']);
 
-// Get ijazah data
 $get = $conn->query("SELECT file_path, nama, nisn FROM ijazah WHERE id='$id' AND (is_deleted = FALSE OR is_deleted IS NULL) LIMIT 1");
 
 if ($get->num_rows === 0) {
@@ -34,12 +32,10 @@ if ($get->num_rows === 0) {
 
 $data = $get->fetch_assoc();
 
-// SOFT DELETE - Update status instead of hard delete
 $stmt = $conn->prepare("UPDATE ijazah SET is_deleted = 1, deleted_at = NOW(), deleted_by = ?, delete_reason = ? WHERE id = ?");
 $stmt->bind_param("isi", $user['id'], $deleteReason, $id);
 
 if ($stmt->execute()) {
-    // Log activity with reason
     if ($user) {
         ActivityLogger::log(
             $conn,
