@@ -4,10 +4,6 @@ require_once __DIR__ . '/../helpers/SecureToken.php';
 
 class SkpiController {
     public function request() {
-        // Debug Log
-        file_put_contents(__DIR__ . '/../../debug_skpi.txt', "Request received at " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
-        file_put_contents(__DIR__ . '/../../debug_skpi.txt', "POST: " . print_r($_POST, true) . "\n", FILE_APPEND);
-        file_put_contents(__DIR__ . '/../../debug_skpi.txt', "FILES: " . print_r($_FILES, true) . "\n", FILE_APPEND);
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
              http_response_code(405); 
@@ -95,23 +91,17 @@ class SkpiController {
              </div>";
              exit;
         }
-
-        // Render Print View (HTML for PDF)
         $this->renderView($data);
     }
 
     private function renderView($data) {
-        // Path to logo in frontend/public
         $imagePath = __DIR__ . '/../../../frontend/public/logo_dinas.png';
         
-        // Default placeholder or Base64 encode the real image
         $logoSrc = '';
         if (file_exists($imagePath)) {
             $imageData = base64_encode(file_get_contents($imagePath));
-            // Assuming png, but capable of handling others if we checked mime type
             $logoSrc = 'data:image/png;base64,' . $imageData; 
         } else {
-             // Fallback if file not found
             $logoSrc = 'http://localhost:5173/logo_dinas.png';
         }
         

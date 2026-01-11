@@ -18,7 +18,7 @@ class IjazahController {
         $tahun            = $_POST["tahun"];
         $nomor_ijazah     = $_POST["nomor_ijazah"] ?? "IJZ-" . rand(100000, 999999);
         $sekolah          = $_POST["sekolah"];
-        $file_hash        = $_POST["file_hash"] ?? null; // Hash from frontend
+        $file_hash        = $_POST["file_hash"] ?? null;
 
         if(!$nama || !$nisn || !$tanggal_lahir || !$nama_orang_tua || !$tahun) {
             jsonResponse(false, "Semua field wajib diisi.");
@@ -36,30 +36,25 @@ class IjazahController {
              mkdir($uploadDir, 0777, true);
         }
 
-        // Sanitize original filename to remove special characters
         $originalName = pathinfo($file["name"], PATHINFO_FILENAME);
         $safeName = preg_replace('/[^a-zA-Z0-9\-_]/', '', $originalName);
         $filename = uniqid() . "_" . $safeName . "." . $ext;
         $targetFile = $uploadDir . $filename;
         
-        // Use nomor_ijazah as encryption key (unique per ijazah)
         $KEY = $nomor_ijazah;
         $fileContent = file_get_contents($file["tmp_name"]);
         
-        // Generate file hash if not provided (for duplicate detection)
         if (!$file_hash) {
             $file_hash = base64_encode(hash('sha256', $fileContent, true));
         }
         
-        // Encrypt: XOR + Base64
         $encrypted = "";
         $keyLength = strlen($KEY);
         for ($i = 0; $i < strlen($fileContent); $i++) {
-            $encrypted .= $fileContent[$i] ^ $KEY[$i % $keyLength];
+            $encrypted .= $fileContent[$i] ^ $KEY[$i % $keyLength]; // XOR Operation
         }
-        $finalData = base64_encode($encrypted);
+        $finalData = base64_encode($encrypted); // Base64 Encode
 
-        
         if (file_put_contents($targetFile, $finalData) === false) {
              jsonResponse(false, "Gagal menyimpan file enkripsi.");
         }
@@ -79,7 +74,6 @@ class IjazahController {
             ]);
             
             if ($save) {
-                // Log activity
                 if ($user) {
                     require_once __DIR__ . '/../config/database.php';
                     global $conn;
@@ -118,13 +112,10 @@ class IjazahController {
             return null;
         }
 
-        // Read encrypted file (Base64 encoded)
         $encryptedBase64 = file_get_contents($filePath);
         
-        // Decode Base64
         $encryptedData = base64_decode($encryptedBase64);
         
-        // Decrypt using nomor_ijazah as key
         $KEY = $data['nomor_ijazah'];
         $decrypted = "";
         $keyLength = strlen($KEY);
@@ -135,7 +126,7 @@ class IjazahController {
         
         return [
             'filename' => $data['file_path'],
-            'filedata' => $decrypted // Return decrypted data
+            'filedata' => $decrypted
         ];
     }
     

@@ -20,10 +20,8 @@ class UserController {
     private function processSchoolInput($input) {
         $sekolahModel = new SekolahModel();
 
-        // 1. If using existing school ID
         if ((!isset($input['new_school']) || $input['new_school'] !== true) && !empty($input['sekolah_id'])) {
             $id = $input['sekolah_id'];
-            // Update jumlah_siswa if provided
             if (isset($input['jumlah_siswa'])) {
                 $current = $sekolahModel->find($id);
                 if ($current) {
@@ -38,7 +36,6 @@ class UserController {
             return $id;
         }
 
-        // 2. If creating new school or updating by NPSN
         $namaSekolah = $input['nama_sekolah'] ?? '';
         $npsn = $input['npsn'] ?? '';
         $jenjang = $input['jenjang'] ?? '';
@@ -121,11 +118,6 @@ class UserController {
         if (isset($input['role'])) $data['role'] = $input['role'];
         
         $nonSchoolRoles = ['super_admin', 'admin_ijazah'];
-        
-        // Determine the effective role (new role or existing role if not changed)
-        // Note: For simplicity in update, if role is passed, we check it. 
-        // If not passed, we assume we might need to keep existing school logic or update it if new_school is triggered.
-        // However, safest is: if role is changing to an admin role, force school_id to null.
         
         if (isset($input['role']) && in_array($input['role'], $nonSchoolRoles)) {
             $data['sekolah_id'] = null;

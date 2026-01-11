@@ -18,13 +18,10 @@ class ActivityLogger {
      */
     public static function log($conn, $user, $action, $module, $description = null) {
         try {
-            // Get IP address
             $ipAddress = self::getIpAddress();
             
-            // Get user agent
             $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
             
-            // Prepare statement
             $stmt = $conn->prepare(
                 "INSERT INTO activity_logs (user_id, username, action, module, description, ip_address, user_agent) 
                  VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -55,7 +52,6 @@ class ActivityLogger {
             return $result;
             
         } catch (Exception $e) {
-            // Silent fail - don't break the main operation if logging fails
             error_log("ActivityLogger: Exception - " . $e->getMessage());
             return false;
         }
@@ -146,12 +142,10 @@ class ActivityLogger {
     public static function getStats($conn) {
         $stats = [];
         
-        // Total activities today
         $sql = "SELECT COUNT(*) as count FROM activity_logs WHERE DATE(created_at) = CURDATE()";
         $result = $conn->query($sql);
         $stats['today_count'] = $result->fetch_assoc()['count'] ?? 0;
         
-        // Activities by module
         $sql = "SELECT module, COUNT(*) as count FROM activity_logs GROUP BY module ORDER BY count DESC";
         $result = $conn->query($sql);
         $stats['by_module'] = [];
@@ -159,7 +153,6 @@ class ActivityLogger {
             $stats['by_module'][$row['module']] = $row['count'];
         }
         
-        // Most active users (last 7 days)
         $sql = "SELECT username, COUNT(*) as count FROM activity_logs 
                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) 
                 GROUP BY username ORDER BY count DESC LIMIT 5";

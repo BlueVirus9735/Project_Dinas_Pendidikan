@@ -9,7 +9,6 @@ class AuthMiddleware {
             exit();
         }
 
-        // 1. Get Headers (Robust Way)
         $authHeader = null;
         if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
@@ -22,7 +21,6 @@ class AuthMiddleware {
             }
         }
 
-        // Fallback: Check Query Param (for downloads)
         if (!$authHeader && isset($_GET['token'])) {
             $authHeader = 'Bearer ' . $_GET['token'];
         }
