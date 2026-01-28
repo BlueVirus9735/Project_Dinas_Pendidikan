@@ -50,7 +50,7 @@ export default function HowItWorks() {
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-gold rounded-full flex items-center justify-center text-white font-bold text-sm shadow-glow-gold">
                     {index + 1}
                   </div>
-
+                  {/* <ArrowRight className="w-8 h-8 text-rich-gold" /> */}
                   {/* Icon */}
                   <div
                     className={`inline-flex p-4 rounded-xl bg-gradient-to-br ${step.color} mb-4`}
@@ -75,9 +75,7 @@ export default function HowItWorks() {
                 <div
                   className="hidden md:flex items-center justify-center absolute top-1/2 -translate-y-1/2"
                   style={{ left: `${(index + 1) * 33.33 - 16.66}%` }}
-                >
-                  <ArrowRight className="w-8 h-8 text-rich-gold" />
-                </div>
+                ></div>
               )}
             </React.Fragment>
           ))}

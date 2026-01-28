@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/UserModel.php';
+require_once __DIR__ . '/../helpers/JwtHelper.php';
 require_once __DIR__ . '/response.php';
 
 class AuthMiddleware {
@@ -39,22 +40,14 @@ class AuthMiddleware {
             exit();
         }
 
-        $decoded = base64_decode($token);
-        if (!$decoded || strpos($decoded, ':') === false) {
+        $payload = JwtHelper::validate($token);
+        if (!$payload) {
              http_response_code(401);
-             echo json_encode(['status' => false, 'message' => 'Unauthorized: Invalid token']);
-             exit();
-        }
-
-        $parts = explode(':', $decoded);
-        if (count($parts) < 2) {
-             http_response_code(401);
-             echo json_encode(['status' => false, 'message' => 'Unauthorized: Invalid token structure']);
+             echo json_encode(['status' => false, 'message' => 'Unauthorized: Invalid or expired token']);
              exit();
         }
         
-        $username = $parts[0];
-        $timestamp = $parts[1];
+        $username = $payload['username'];
 
         $userModel = new UserModel();
         $user = $userModel->findByUsername($username);

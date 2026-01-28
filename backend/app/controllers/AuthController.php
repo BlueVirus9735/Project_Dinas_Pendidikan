@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../models/UserModel.php";
 require_once __DIR__ . "/../helpers/response.php";
+require_once __DIR__ . "/../helpers/JwtHelper.php";
 
 class AuthController {
 
@@ -22,7 +23,12 @@ class AuthController {
             if (password_verify($password, $user['password'])) {
                  unset($user['password']); 
                  jsonResponse(true, "Login berhasil", [
-                     'token' => base64_encode($user['username'] . ':' . time()), 
+                     'token' => JwtHelper::generate([
+                         'id' => $user['id'],
+                         'username' => $user['username'],
+                         'role' => $user['role'],
+                         'nama_sekolah' => $user['nama_sekolah'] ?? null
+                     ]), 
                      'user' => $user
                  ]);
             } else {
