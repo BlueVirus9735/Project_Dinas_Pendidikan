@@ -3,6 +3,9 @@
 require_once __DIR__ . "/../models/IjazahModel.php";
 require_once __DIR__ . "/../helpers/response.php";
 require_once __DIR__ . "/../helpers/ActivityLogger.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
+
+use Smalot\PdfParser\Parser;
 
 class IjazahController {
 
@@ -66,6 +69,29 @@ class IjazahController {
             jsonResponse(false, "Format file tidak valid atau terdeteksi berbahaya. Hanya PDF/JPG/PNG yang diperbolehkan.");
         }
 
+        $content_hash = null;
+        if ($ext === 'pdf') {
+            try {
+                $parser = new Parser();
+                $pdf = $parser->parseFile($file["tmp_name"]);
+                $text = $pdf->getText();
+                
+                // Clean text for consistent hashing
+                $cleanText = preg_replace('/\s+/', '', $text);
+                $content_hash = hash('sha256', $cleanText);
+
+                $model = new IjazahModel();
+                $existingContent = $model->findByContentHash($content_hash);
+                if ($existingContent) {
+                    jsonResponse(false, "Peringatan: Konten ijazah ini sudah ada di database (Nomor Ijazah: " . $existingContent['nomor_ijazah'] . "). Sistem mendeteksi bahwa ini adalah file yang sama meskipun mungkin telah dimodifikasi secara biner.");
+                }
+            } catch (Exception $e) {
+                // If parsing fails, we could either stop or just log it. 
+                // For security, let's stop if it's a PDF but unreadable.
+                jsonResponse(false, "Gagal membaca isi PDF: " . $e->getMessage());
+            }
+        }
+
         $uploadDir = __DIR__ . "/../../uploads/ijazah/";
         if (!is_dir($uploadDir)) {
              mkdir($uploadDir, 0777, true);
@@ -105,7 +131,8 @@ class IjazahController {
                 "sekolah"           => $sekolah,
                 "tahun"             => $tahun,
                 "file_path"         => $filename,
-                "file_hash"         => $file_hash
+                "file_hash"         => $file_hash,
+                "content_hash"      => $content_hash
             ]);
             
             if ($save) {

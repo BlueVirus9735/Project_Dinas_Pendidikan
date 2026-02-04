@@ -13,8 +13,8 @@ class IjazahModel {
     public function save($data) {
         
         $sql = "INSERT INTO ijazah 
-        (nama, nisn, tanggal_lahir, nama_orang_tua, nomor_ijazah, sekolah, tahun, file_path, file_hash, created_at) 
-        VALUES (:nama, :nisn, :tanggal_lahir, :nama_orang_tua, :nomor_ijazah, :sekolah, :tahun, :file_path, :file_hash, NOW())";
+        (nama, nisn, tanggal_lahir, nama_orang_tua, nomor_ijazah, sekolah, tahun, file_path, file_hash, content_hash, created_at) 
+        VALUES (:nama, :nisn, :tanggal_lahir, :nama_orang_tua, :nomor_ijazah, :sekolah, :tahun, :file_path, :file_hash, :content_hash, NOW())";
 
         $stmt = $this->db->prepare($sql);
 
@@ -27,7 +27,8 @@ class IjazahModel {
             ":sekolah"           => $data["sekolah"],
             ":tahun"             => $data["tahun"],
             ":file_path"         => $data["file_path"],
-            ":file_hash"         => $data["file_hash"] ?? null
+            ":file_hash"         => $data["file_hash"] ?? null,
+            ":content_hash"      => $data["content_hash"] ?? null
         ]);
     }
 
@@ -40,6 +41,12 @@ class IjazahModel {
     public function findByNisn($nisn) {
         $stmt = $this->db->prepare("SELECT * FROM ijazah WHERE nisn = :nisn AND (is_deleted = 0 OR is_deleted IS NULL) LIMIT 1");
         $stmt->execute([':nisn' => $nisn]);
+        return $stmt->fetch();
+    }
+
+    public function findByContentHash($hash) {
+        $stmt = $this->db->prepare("SELECT * FROM ijazah WHERE content_hash = :hash AND (is_deleted = 0 OR is_deleted IS NULL) LIMIT 1");
+        $stmt->execute([':hash' => $hash]);
         return $stmt->fetch();
     }
 
