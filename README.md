@@ -1,100 +1,127 @@
-# 🎓 Sistem Informasi Dinas Pendidikan (SIPENDIK)
+# 🎓 Sistem Informasi Arsip Ijazah Digital (E-Arsip)
 
-**SIPENDIK** adalah platform digital terintegrasi yang dirancang untuk memodernisasi manajemen pendidikan di Dinas Pendidikan. Sistem ini menggabungkan pengelolaan **Dana Bantuan Operasional Sekolah (BOS)** berbasis kecerdasan buatan dan **Arsip Digital Ijazah** yang aman dan terstruktur.
+**E-Arsip** adalah platform manajemen dokumen kelulusan yang dirancang khusus untuk Dinas Pendidikan. Sistem ini berfokus pada keamanan penyimpanan, validasi integritas dokumen menggunakan AI/Parser, dan efisiensi alur penerbitan Surat Keterangan Pengganti Ijazah (SKPI).
 
-![Tech Stack](https://img.shields.io/badge/Stack-React%20%7C%20PHP%20%7C%20MySQL-blue)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
-
----
-
-## 🌟 Fitur Utama & Modul
-
-### 1. 💰 Manajemen Data BOS & Analisis Cerdas (K-Means)
-
-Modul ini membantu Dinas Pendidikan dalam memetakan prioritas perbaikan sekolah secara objektif menggunakan algoritma _Machine Learning_.
-
-- **📊 Dashboard Eksekutif**: Ringkasan statistik total dana, sebaran sekolah, dan status perbaikan dalam bentuk grafik interaktif.
-- **📥 Input Data Fleksibel**:
-  - Upload data massal via Excel/CSV.
-  - Input manual dengan validasi _real-time_.
-- **🤖 Clustering K-Means Otomatis**:
-  - Mengelompokkan sekolah ke dalam 3 klaster prioritas: **Tinggi, Sedang, Rendah**.
-  - Analisis berbasis 5 dimensi: Jumlah Siswa, Guru, Rombel, Dana BOS, dan Tingkat Kerusakan.
-  - **Auto-Labeling**: Sistem cerdas yang menamai klaster berdasarkan karakteristik data (bukan sekadar C1/C2/C3).
-- **📉 Visualisasi Data**: Scatter Plot & Bar Chart untuk membandingkan posisi sekolah antar klaster.
-- **🏫 Master Data Fasilitas**: Standarisasi jenis kerusakan dan fasilitas untuk pelaporan yang konsisten.
-
-### 2. 📜 E-Arsip Ijazah & SKPI (Surat Keterangan Pendamping Ijazah)
-
-Solusi _end-to-end_ untuk penyimpanan, pencarian, dan penerbitan dokumen kelulusan yang valid dan aman.
-
-- **🔍 Smart Search & Filtering**: Pencarian ijazah super cepat berdasarkan NISN, Nama, Sekolah, atau Tahun Lulus.
-- **📂 Manajemen Arsip Digital**:
-  - Upload hasil scan ijazah asli.
-  - Penyimpanan terstruktur dengan validasi dokumen.
-- **🛡️ Penerbitan SKPI (SOP Compliant)**:
-  - **Alur Pengajuan**: Operator sekolah mengajukan SKPI dengan melampirkan **Surat Keterangan Kehilangan Kepolisian**.
-  - **Verifikasi Bertingkat**: Admin Dinas memverifikasi dokumen sebelum menyetujui (Approve) atau menolak (Reject) dengan alasan.
-  - **Cetak Secure**: SKPI hanya bisa dicetak setelah disetujui, dilengkapi dengan sistem pengomoran otomatis dan token keamanan.
-
-### 3. 🔐 Keamanan & Hak Akses (Role-Based Access Control)
-
-Sistem dilengkapi dengan keamanan tingkat tinggi untuk melindungi data sensitif siswa dan sekolah.
-
-- **Role Management**:
-  1.  **🦸‍♂️ Super Admin**: Kontrol penuh atas sistem, user, dan konfigurasi global.
-  2.  **👮 Admin Ijazah**: Otoritas khusus untuk verifikasi SKPI dan manajemen arsip ijazah.
-  3.  **👮 Admin BOS**: Otoritas khusus untuk verifikasi SKPI dan manajemen arsip ijazah.
-  4.  **🏢 Operator Sekolah**: Akses terbatas untuk mengelola data sekolahnya sendiri (Privacy Protected).
-- **Secure Authentication**: Login menggunakan Token JWT (JSON Web Token) dengan enkripsi password Bcrypt.
-- **Secure Downloads**: Link download file dilindungi token verifikasi (mencegah akses langsung tanpa login).
+![Stack](https://img.shields.io/badge/Stack-React%20%7C%20PHP%20%7C%20MySQL-blue)
+![Security](https://img.shields.io/badge/Security-HttpOnly%20Cookies%20%7C%20Enkripsi%20XOR-green)
+![Integrity](https://img.shields.io/badge/Integrity-PdfParser--Check-orange)
 
 ---
 
-## 🛠️ Stack Teknologi
+## 🌟 Fitur Utama
 
-Aplikasi ini dibangun menggunakan teknologi modern yang menjamin kecepatan, skalabilitas, dan kemudahan perawatan.
+### 1. 📂 Manajemen Arsip Ijazah Digital
 
-### Frontend (Antarmuka Pengguna)
+- **Smart Indexing**: Pencarian dokumen super cepat berdasarkan NISN, Nama, Sekolah, atau Tahun Kelulusan.
+- **🛡️ Integritas Konten (Anti-Manipulation)**: Menggunakan library `smalot/pdfparser` untuk "membaca" isi PDF. Sistem otomatis menolak upload jika konten dokumen sudah ada di database, meskipun file biner telah dimodifikasi (diedit metadata/dikompres).
+- **🔐 Cloud Encryption**: Setiap file yang diupload dienkripsi menggunakan algoritma XOR sebelum disimpan di server, memastikan data tidak dapat dibuka secara ilegal.
 
-- **Framework**: [React.js](https://react.dev/) (dengan Vite untuk performa kilat).
-- **Desain UI**: **Glassmorphism Premium** menggunakan [Tailwind CSS](https://tailwindcss.com/).
-- **Ikon**: [Lucide React](https://lucide.dev/) (Ikon vektor modern & ringan).
-- **Interaktivitas**:
-  - **SweetAlert2** untuk notifikasi yang elegan.
-  - **Recharts** untuk visualisasi data statistik yang dinamis.
-  - **Framer Motion** untuk animasi transisi yang halus.
+### 2. 📜 Modul SKPI (Surat Keterangan Pengganti Ijazah)
 
-### Backend (Server & Database)
+- **Alur Digital SOP**: Pengajuan dari sekolah -> Lampiran Surat Polisi -> Verifikasi Admin Dinas -> Approval.
+- **Secure Printing**: Cetak otomatis dengan penomoran sistem dan token keamanan unik untuk mencegah pemalsuan dokumen fisik.
+- **Status Tracking**: Visualisasi status pengajuan (Pending, Approved, Rejected) yang jelas untuk operator sekolah.
 
-- **Bahasa**: PHP Native (Terstruktur dengan pola MVC & REST API).
-- **Database**: MySQL / MariaDB (Relasional).
-- **Keamanan**:
-  - **CORS Protection**: Proteksi ketat terhadap akses lintas domain yang tidak sah.
-  - **SQL Injection Prevention**: Menggunakan PDO Prepared Statements.
-  - **Secure Token**: Enkripsi XOR + Base64 untuk validasi dokumen.
+### 3. ♻️ Trash Can & Audit Log
+
+- **Soft Delete System**: Fitur "Kotak Sampah" untuk memulihkan ijazah yang tidak sengaja terhapus.
+- **Activity Logger**: Pencatatan setiap aksi admin (Login, View, Download, Delete) sebagai fungsi audit trail yang transparan.
 
 ---
 
-## 🔄 Alur Kerja Sistem (Workflow)
+## 🛠️ Arsitektur & Teknologi
 
-### 🔹 Alur Clustering BOS
+### 🌐 Frontend (React Ecosystem)
 
-1.  **Input**: Data kondisi sekolah diinput ke sistem (via Excel/Form).
-2.  **Processing**: Algoritma K-Means menghitung jarak centroid dan mengelompokkan data.
-3.  **Result**: Sekolah dilabeli "Prioritas Tinggi/Sedang/Rendah".
-4.  **Decision**: Dinas menggunakan data ini untuk alokasi perbaikan.
+- **Engine**: React 18 dengan Vite (Pemuatan super cepat).
+- **UI Architecture**: Premium Glassmorphism Design menggunakan Tailwind CSS.
+- **State Management**: Context API untuk manajemen autentikasi global.
+- **APIs**: Axios Interceptor untuk penanganan kredensial cookie otomatis.
 
-### 🔹 Alur Penerbitan SKPI (SOP)
+### ⚙️ Backend (PHP RESTful API)
 
-1.  **Permohonan**: Orang tua melapor ke sekolah -> Operator Sekolah upload Surat Polisi ke sistem.
-2.  **Verifikasi**: Status pengajuan menjadi "Pending" (Kuning). Admin Dinas menerima notifikasi.
-3.  **Validasi Admin**:
-    - Jika dokumen lengkap -> Klik **Approve** (Status jadi "Approved"/Hijau).
-    - Jika kurang -> Klik **Reject** (Status jadi "Rejected"/Merah).
-4.  **Pencetakan**: Tombol **"Cetak SKPI"** hanya muncul di akun Operator setelah status "Approved".
-5.  **Output**: Dokumen PDF resmi dengan Tanda Tangan Kadis & Token Keamanan.
+- **Core**: PHP Native dengan pola arsitektur MVC (Model-View-Controller).
+- **Security Logic**:
+  - **HttpOnly Cookies**: JWT disimpan di level browser yang tidak bisa diakses JavaScript (Proteksi XSS).
+  - **PDO Statements**: Proteksi penuh terhadap SQL Injection.
+  - **CORS Management**: Integrasi lintas origin yang aman antara frontend dan backend.
+- **Libraries**:
+  - `smalot/pdfparser` untuk validasi konten dokumen.
+  - `firebase/php-jwt` untuk sistem keamanan sesi.
 
 ---
 
-> _"Digitalisasi Pendidikan untuk Masa Depan yang Lebih Baik."_
+## 🚀 Panduan Instalasi & Penggunaan
+
+### 1. Persiapan Lingkungan
+
+- **PHP**: Versi 8.1 atau lebih tinggi.
+- **Database**: MySQL / MariaDB.
+- **Tools**: Composer & Node.js (npm).
+
+### 2. Konfigurasi Backend
+
+```bash
+cd backend
+composer install
+```
+
+- Konfigurasi database di `backend/app/config/database.php`.
+- Pastikan folder `backend/uploads/ijazah` memiliki izin tulis (writeable).
+
+### 3. Konfigurasi Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+- Pastikan URL API di `frontend/src/services/api.js` mengarah ke server backend Anda.
+
+### 4. Menjalankan Sistem
+
+Di direktori utama (root), jalankan:
+
+```bash
+npm run full
+```
+
+_Perintah ini akan menyalakan server Frontend (Vite) dan memastika koneksi Backend siap digunakan._
+
+---
+
+## 🔐 Keamanan & Hak Akses
+
+- **Super Admin**: Akses penuh ke seluruh sistem, audit log, dan manajemen user.
+- **Admin Ijazah**: Fokus pada verifikasi pengajuan SKPI dan manajemen arsip.
+- **Operator Sekolah**: Akses terbatas untuk input dan monitoring data sekolah masing-masing.
+
+---
+
+## 🔐 Deep Dive: Sistem Keamanan Dokumen (XOR & Base64)
+
+Untuk menjamin kerahasiaan dokumen, E-Arsip menggunakan kombinasi **XOR Cipher** dan **Base64 Encoding** sebelum file disimpan ke server.
+
+### 1. 🔑 XOR Encryption (Symmetric Cipher)
+
+Sistem menggunakan operasi bitwise XOR (`^`) antara byte file asli dengan kunci rahasia.
+
+- **Kunci Rahasia**: Menggunakan `nomor_ijazah` siswa. Ini berarti setiap ijazah didekripsi dengan kunci yang unik.
+- **Logika**: `Data Asli ^ Kunci = Data Terenkripsi`.
+- **Keunggulan**: Sangat ringan (performa tinggi) dan bersifat _reversible_ (timbal balik). Untuk mengembalikan file asli, sistem cukup melakukan XOR kembali dengan kunci yang sama: `Data Terenkripsi ^ Kunci = Data Asli`.
+
+### 2. 📦 Base64 Encoding
+
+Hasil dari operasi XOR adalah data biner mentah yang seringkali mengandung karakter non-printable yang bisa merusak struktur file atau database.
+
+- **Fungsi**: Mengonversi data biner hasil enkripsi menjadi string karakter ASCII yang aman (A-Z, a-z, 0-9, +, /).
+- **Tujuan**: Memastikan data terenkripsi dapat disimpan sebagai teks biasa (`.txt` terselubung) di server tanpa risiko korupsi data saat proses transfer atau penyimpanan.
+
+---
+
+> [!IMPORTANT]
+> Dengan kombinasi ini, meskipun seseorang berhasil membobol folder `uploads/ijazah`, mereka hanya akan menemukan string teks acak yang tidak bisa dibuka tanpa mengetahui kunci `nomor_ijazah` yang tepat untuk setiap file.
+
+---
+
+© 2026 Dinas Pendidikan - "Digitalisasi Arsip untuk Integritas Pendidikan."
