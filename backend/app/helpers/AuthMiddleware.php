@@ -22,7 +22,11 @@ class AuthMiddleware {
             }
         }
 
-        if (!$authHeader && isset($_GET['token'])) {
+        if (!$authHeader && isset($_COOKIE['token'])) {
+            $authHeader = 'Bearer ' . $_COOKIE['token'];
+        }
+
+        if (!$authHeader && isset($_GET['token']) && $_GET['token'] !== 'null') {
             $authHeader = 'Bearer ' . $_GET['token'];
         }
 

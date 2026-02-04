@@ -12,11 +12,8 @@ export default function NotificationSection() {
   });
 
   const handleToggle = (key) => {
-    setSettings((prev) => {
-      const newSettings = { ...prev, [key]: !prev[key] };
-      toast.success("Pengaturan notifikasi disimpan");
-      return newSettings;
-    });
+    setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
+    toast.success("Pengaturan notifikasi disimpan");
   };
 
   const notificationOptions = [

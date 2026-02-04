@@ -19,18 +19,13 @@ export default function IjazahCard({
     item.status_verifikasi == 1 || item.status_verifikasi === "terverifikasi";
 
   const handlePreview = () => {
-    const token = localStorage.getItem("token");
-    window.open(
-      `http://localhost:8000/api/view.php?id=${item.id}&token=${token}`,
-      "_blank"
-    );
+    window.open(`http://localhost:8000/api/view.php?id=${item.id}`, "_blank");
   };
 
   const handleDownload = () => {
-    const token = localStorage.getItem("token");
     window.open(
-      `http://localhost:8000/api/download.php?id=${item.id}&token=${token}`,
-      "_blank"
+      `http://localhost:8000/api/download.php?id=${item.id}`,
+      "_blank",
     );
   };
 

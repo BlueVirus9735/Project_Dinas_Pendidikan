@@ -30,7 +30,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/login" replace />;
   }
 
-  const { isAuthenticated, loading, user } = authContext;
+  const { isAuthenticated, loading, user, logout } = authContext;
 
   if (loading) {
     return (
@@ -43,12 +43,11 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
+
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    return (
-      <div className="p-8 text-center text-red-600">
-        Anda tidak memiliki akses ke halaman ini.
-      </div>
-    );
+    // Logout otomatis jika role tidak sesuai (Force Logout)
+    logout();
+    return <Navigate to="/login" replace />;
   }
 
   return children;

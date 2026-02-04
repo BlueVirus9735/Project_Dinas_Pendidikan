@@ -22,13 +22,16 @@ class AuthController {
         if ($user) {
             if (password_verify($password, $user['password'])) {
                  unset($user['password']); 
+                 $token = JwtHelper::generate([
+                     'id' => $user['id'],
+                     'username' => $user['username'],
+                     'role' => $user['role'],
+                     'nama_sekolah' => $user['nama_sekolah'] ?? null
+                 ]);
+
+                 JwtHelper::setCookie($token);
+
                  jsonResponse(true, "Login berhasil", [
-                     'token' => JwtHelper::generate([
-                         'id' => $user['id'],
-                         'username' => $user['username'],
-                         'role' => $user['role'],
-                         'nama_sekolah' => $user['nama_sekolah'] ?? null
-                     ]), 
                      'user' => $user
                  ]);
             } else {

@@ -29,6 +29,18 @@ class JwtHelper {
         return $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
     }
 
+    public static function setCookie($token) {
+        $cookieParams = [
+            'expires' => time() + (24 * 60 * 60),
+            'path' => '/',
+            'domain' => '', // Set domain if needed, e.g., 'localhost' or your domain
+            'secure' => true, // Kirim hanya lewat HTTPS
+            'httponly' => true, // Tidak bisa diakses via JS
+            'samesite' => 'Strict' // Melindungi dari CSRF
+        ];
+        setcookie('token', $token, $cookieParams);
+    }
+
     public static function validate($token) {
         $parts = explode('.', $token);
         if (count($parts) !== 3) return null;

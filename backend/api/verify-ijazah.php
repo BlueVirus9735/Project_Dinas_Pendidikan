@@ -1,7 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
+require_once __DIR__ . '/../app/config/cors.php';
 header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -49,7 +47,7 @@ try {
         // Log activity
         $action = $newStatus == 1 ? 'memverifikasi' : 'membatalkan verifikasi';
         ActivityLogger::log(
-            $conn,
+            Database::connect(),
             $user,
             $newStatus == 1 ? 'ijazah_verify' : 'ijazah_unverify',
             'ijazah',

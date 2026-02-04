@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Trash2, AlertTriangle, Search, Filter } from "lucide-react";
 import toast from "react-hot-toast";
-import API_BASE_URL from "../config";
+import { api } from "../services/api";
 import TrashCard from "../components/trash/TrashCard";
 import ConfirmModal from "../components/common/ConfirmModal";
 
@@ -20,22 +20,8 @@ export default function Trash() {
   const fetchTrash = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        toast.error("Token tidak ditemukan. Silakan login kembali.");
-        return;
-      }
-
-      const response = await fetch(`${API_BASE_URL}/trash/list.php`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
+      const response = await api.get("/trash/list.php");
+      const data = response.data;
 
       if (data.status) {
         setTrashItems(data.data.items || []);
@@ -52,17 +38,9 @@ export default function Trash() {
 
   const handleRestore = async (item) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}/trash/restore.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ id: item.id }),
-      });
+      const response = await api.post("/trash/restore.php", { id: item.id });
+      const data = response.data;
 
-      const data = await response.json();
       if (data.status) {
         toast.success(`Ijazah ${item.nama} berhasil dipulihkan!`);
         fetchTrash(); // Refresh list
@@ -84,20 +62,11 @@ export default function Trash() {
     if (!selectedItem) return;
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${API_BASE_URL}/trash/permanent-delete.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ id: selectedItem.id }),
-        }
-      );
+      const response = await api.post("/trash/permanent-delete.php", {
+        id: selectedItem.id,
+      });
+      const data = response.data;
 
-      const data = await response.json();
       if (data.status) {
         toast.success(`Ijazah ${selectedItem.nama} berhasil dihapus permanen!`);
         setShowPermanentDeleteModal(false);

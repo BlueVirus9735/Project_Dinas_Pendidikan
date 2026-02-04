@@ -173,7 +173,7 @@ export default function IjazahTable({
                               const token = generateSecureToken(item.id);
                               window.open(
                                 `http://localhost:8000/api/print_skpi.php?token=${token}`,
-                                "_blank"
+                                "_blank",
                               );
                             }}
                             className="flex items-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 rounded-xl transition-all text-xs font-bold"
@@ -259,9 +259,7 @@ export default function IjazahTable({
 
                     {item.file_path ? (
                       <a
-                        href={`http://localhost:8000/api/download.php?id=${
-                          item.id
-                        }&token=${localStorage.getItem("token")}`}
+                        href={`http://localhost:8000/api/download.php?id=${item.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40 rounded-xl transition-all text-xs font-bold"

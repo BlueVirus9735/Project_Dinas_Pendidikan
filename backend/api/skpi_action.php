@@ -1,7 +1,6 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+require_once __DIR__ . '/../app/config/cors.php';
+header("Content-Type: application/json");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
@@ -22,7 +21,7 @@ switch ($action) {
         $controller->request();
         if ($user && isset($conn)) {
             $id = $_POST['id'] ?? 'unknown';
-            ActivityLogger::log($conn, $user, 'skpi_request', 'skpi', "Mengajukan SKPI untuk ijazah ID: {$id}");
+            ActivityLogger::log(Database::connect(), $user, 'skpi_request', 'skpi', "Mengajukan SKPI untuk ijazah ID: {$id}");
         }
         break;
     case 'approve':
@@ -30,7 +29,7 @@ switch ($action) {
         if ($user && isset($conn)) {
             $input = json_decode(file_get_contents('php://input'), true);
             $id = $input['id'] ?? 'unknown';
-            ActivityLogger::log($conn, $user, 'skpi_approve', 'skpi', "Menyetujui pengajuan SKPI untuk ijazah ID: {$id}");
+            ActivityLogger::log(Database::connect(), $user, 'skpi_approve', 'skpi', "Menyetujui pengajuan SKPI untuk ijazah ID: {$id}");
         }
         break;
     case 'reject':
@@ -38,7 +37,7 @@ switch ($action) {
         if ($user && isset($conn)) {
             $input = json_decode(file_get_contents('php://input'), true);
             $id = $input['id'] ?? 'unknown';
-            ActivityLogger::log($conn, $user, 'skpi_reject', 'skpi', "Menolak pengajuan SKPI untuk ijazah ID: {$id}");
+            ActivityLogger::log(Database::connect(), $user, 'skpi_reject', 'skpi', "Menolak pengajuan SKPI untuk ijazah ID: {$id}");
         }
         break;
     default:

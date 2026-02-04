@@ -40,7 +40,7 @@ try {
         throw new Exception('File backup tidak ditemukan');
     }
     
-    ActivityLogger::log($conn, $user, 'backup_download', 'backup', "Download backup: {$filename}");
+    ActivityLogger::log(Database::connect(), $user, 'backup_download', 'backup', "Download backup: {$filename}");
     
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename="' . $filename . '"');

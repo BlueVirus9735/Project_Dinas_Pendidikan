@@ -111,17 +111,14 @@ class IjazahController {
             if ($save) {
                 if ($user) {
                     require_once __DIR__ . '/../config/database.php';
-                    global $conn;
                     
-                    if (isset($conn)) {
-                        ActivityLogger::log(
-                            $conn,
-                            $user,
-                            'ijazah_upload',
-                            'ijazah',
-                            "Mengupload ijazah untuk siswa: {$nama} (NISN: {$nisn})"
-                        );
-                    }
+                    ActivityLogger::log(
+                        Database::connect(),
+                        $user,
+                        'ijazah_upload',
+                        'ijazah',
+                        "Mengupload ijazah untuk siswa: {$nama} (NISN: {$nisn})"
+                    );
                 }
                 
                 jsonResponse(true, "Ijazah berhasil diupload!", ["file" => $filename]);

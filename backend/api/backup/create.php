@@ -117,7 +117,7 @@ try {
     $fileSize = filesize($backupFile);
     $filename = basename($backupFile);
     
-    ActivityLogger::log($conn, $user, 'backup_create', 'backup', "Membuat backup database: {$filename}");
+    ActivityLogger::log(Database::connect(), $user, 'backup_create', 'backup', "Membuat backup database: {$filename}");
     
     echo json_encode([
         'success' => true,

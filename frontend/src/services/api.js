@@ -4,28 +4,26 @@ const API_URL = "http://localhost:8000/api";
 
 export const api = axios.create({
   baseURL: API_URL,
+  withCredentials: true,
 });
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = "/login";
+
+      // Stop infinite reload loops by checking current path
+      const currentPath = window.location.pathname;
+      const isLoginPage =
+        currentPath === "/login" || currentPath.endsWith("/login");
+
+      if (!isLoginPage) {
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export const getIjazahList = async (params = {}) => {

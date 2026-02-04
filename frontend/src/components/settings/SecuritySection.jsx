@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Lock, Eye, EyeOff, CheckCircle, XCircle } from "lucide-react";
 import toast from "react-hot-toast";
-import API_BASE_URL from "../../config";
+import { api } from "../../services/api";
 
 export default function SecuritySection() {
   const [formData, setFormData] = useState({
@@ -53,23 +53,12 @@ export default function SecuritySection() {
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${API_BASE_URL}/settings/update-password.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            current_password: formData.currentPassword,
-            new_password: formData.newPassword,
-          }),
-        }
-      );
+      const response = await api.post("/settings/update-password.php", {
+        current_password: formData.currentPassword,
+        new_password: formData.newPassword,
+      });
 
-      const data = await response.json();
+      const data = response.data;
 
       console.log("Response status:", response.status);
       console.log("Response data:", data);
@@ -177,8 +166,8 @@ export default function SecuritySection() {
                       strength.strength === 1
                         ? "w-1/3 bg-red-500"
                         : strength.strength === 2
-                        ? "w-2/3 bg-amber-500"
-                        : "w-full bg-emerald-500"
+                          ? "w-2/3 bg-amber-500"
+                          : "w-full bg-emerald-500"
                     }`}
                   />
                 </div>

@@ -58,7 +58,7 @@ try {
         throw new Exception('Gagal restore backup: ' . implode("\n", $output));
     }
     
-    ActivityLogger::log($conn, $user, 'backup_restore', 'backup', "RESTORE database dari backup: {$filename} [CRITICAL]");
+    ActivityLogger::log(Database::connect(), $user, 'backup_restore', 'backup', "RESTORE database dari backup: {$filename} [CRITICAL]");
     
     echo json_encode([
         'success' => true,

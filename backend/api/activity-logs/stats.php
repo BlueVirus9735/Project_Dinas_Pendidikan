@@ -20,10 +20,13 @@ try {
     }
     
     if ($user['role'] !== 'super_admin') {
-        throw new Exception('Hanya Super Admin yang dapat melihat statistik aktivitas');
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Hanya Super Admin yang dapat melihat statistik aktivitas']);
+        exit;
     }
     
-    $stats = ActivityLogger::getStats($conn);
+    $db = Database::connect();
+    $stats = ActivityLogger::getStats($db);
     
     echo json_encode([
         'success' => true,

@@ -20,7 +20,9 @@ try {
     }
     
     if ($user['role'] !== 'super_admin') {
-        throw new Exception('Hanya Super Admin yang dapat melihat riwayat aktivitas');
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Hanya Super Admin yang dapat melihat riwayat aktivitas']);
+        exit;
     }
     
     $filters = [];
@@ -47,7 +49,8 @@ try {
     
     $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 100;
     
-    $logs = ActivityLogger::getRecentLogs($conn, $limit, $filters);
+    $db = Database::connect();
+    $logs = ActivityLogger::getRecentLogs($db, $limit, $filters);
     
     echo json_encode([
         'success' => true,

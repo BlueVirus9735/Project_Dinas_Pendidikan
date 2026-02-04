@@ -41,7 +41,7 @@ try {
     }
     
     if (unlink($filePath)) {
-        ActivityLogger::log($conn, $user, 'backup_delete', 'backup', "Menghapus backup: {$filename}");
+        ActivityLogger::log(Database::connect(), $user, 'backup_delete', 'backup', "Menghapus backup: {$filename}");
         
         echo json_encode([
             'success' => true,

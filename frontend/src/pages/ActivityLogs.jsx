@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ClipboardList, Filter, Calendar, User, Activity } from "lucide-react";
 import toast from "react-hot-toast";
-import API_BASE_URL from "../config";
 import ActivityLogCard from "../components/activity/ActivityLogCard";
 import ActivityStats from "../components/activity/ActivityStats";
+import { api } from "../services/api";
 
 export default function ActivityLogs() {
   const [logs, setLogs] = useState([]);
@@ -23,16 +23,9 @@ export default function ActivityLogs() {
 
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}/activity-logs/stats.php`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setStats(data.stats);
+      const response = await api.get("/activity-logs/stats.php");
+      if (response.data.success) {
+        setStats(response.data.stats);
       }
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -42,28 +35,18 @@ export default function ActivityLogs() {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const queryParams = new URLSearchParams();
+      const params = {};
+      if (filters.module) params.module = filters.module;
+      if (filters.action) params.action = filters.action;
+      if (filters.date_from) params.date_from = filters.date_from;
+      if (filters.date_to) params.date_to = filters.date_to;
 
-      if (filters.module) queryParams.append("module", filters.module);
-      if (filters.action) queryParams.append("action", filters.action);
-      if (filters.date_from) queryParams.append("date_from", filters.date_from);
-      if (filters.date_to) queryParams.append("date_to", filters.date_to);
+      const response = await api.get("/activity-logs/list.php", { params });
 
-      const response = await fetch(
-        `${API_BASE_URL}/activity-logs/list.php?${queryParams}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await response.json();
-      if (data.success) {
-        setLogs(data.logs);
+      if (response.data.success) {
+        setLogs(response.data.logs);
       } else {
-        toast.error(data.message || "Gagal memuat riwayat aktivitas");
+        toast.error(response.data.message || "Gagal memuat riwayat aktivitas");
       }
     } catch (error) {
       console.error("Error fetching logs:", error);
@@ -140,6 +123,7 @@ export default function ActivityLogs() {
               <option value="">Semua Module</option>
               <option value="auth">Authentication</option>
               <option value="ijazah">Ijazah</option>
+              <option value="skpi">SKPI</option>
               <option value="user">User Management</option>
               <option value="backup">Backup</option>
               <option value="settings">Settings</option>
@@ -161,12 +145,14 @@ export default function ActivityLogs() {
               <option value="login">Login</option>
               <option value="logout">Logout</option>
               <option value="create">Create</option>
+              <option value="upload">Upload</option>
               <option value="update">Update</option>
+              <option value="verify">Verify</option>
               <option value="delete">Delete</option>
+              <option value="restore">Restore</option>
               <option value="download">Download</option>
-              <option value="backup_create">Backup Create</option>
-              <option value="backup_restore">Backup Restore</option>
-              <option value="password_change">Password Change</option>
+              <option value="backup">Backup Action</option>
+              <option value="password">Password Change</option>
             </select>
           </div>
 

@@ -52,7 +52,7 @@ try {
     $stmt->bind_param("si", $hashedPassword, $userId);
     
     if ($stmt->execute()) {
-        ActivityLogger::log($conn, $user, 'password_change', 'settings', 'Mengubah password akun');
+        ActivityLogger::log(Database::connect(), $user, 'password_change', 'settings', 'Mengubah password akun');
         
         echo json_encode([
             'success' => true,

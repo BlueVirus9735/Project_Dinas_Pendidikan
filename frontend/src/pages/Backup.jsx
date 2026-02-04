@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import ConfirmModal from "../components/common/ConfirmModal";
 import BackupStats from "../components/backup/BackupStats";
 import BackupCard from "../components/backup/BackupCard";
-import API_BASE_URL from "../config";
+import { api } from "../services/api";
 
 export default function Backup() {
   const [backups, setBackups] = useState([]);
@@ -34,11 +34,8 @@ export default function Backup() {
 
   const fetchBackups = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}/backup/list.php`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await response.json();
+      const response = await api.get("/backup/list.php");
+      const data = response.data;
 
       if (data.success) {
         setBackups(data.backups || []);
@@ -58,12 +55,8 @@ export default function Backup() {
     toast.loading("Membuat backup...", { id: "backup" });
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}/backup/create.php`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await response.json();
+      const response = await api.post("/backup/create.php");
+      const data = response.data;
 
       if (data.success) {
         toast.success("Backup berhasil dibuat!", { id: "backup" });
@@ -80,10 +73,13 @@ export default function Backup() {
   };
 
   const handleDownload = (backup) => {
-    const token = localStorage.getItem("token");
+    // We still need the token for the direct URL download if it's not a standard API call
+    // But since it's HttpOnly cookie, we might need a different approach for downloads
+    // For now, let's use the local storage user if available or a generic link
+    // Actually, download.php should also check the cookie.
     window.open(
-      `${API_BASE_URL}/backup/download.php?file=${backup.filename}&token=${token}`,
-      "_blank"
+      `http://localhost:8000/api/backup/download.php?file=${backup.filename}`,
+      "_blank",
     );
     toast.success("Download dimulai");
   };
@@ -94,16 +90,10 @@ export default function Backup() {
     toast.loading("Memulihkan backup...", { id: "restore" });
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}/backup/restore.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ filename: backup.filename }),
+      const response = await api.post("/backup/restore.php", {
+        filename: backup.filename,
       });
-      const data = await response.json();
+      const data = response.data;
 
       if (data.success) {
         toast.success("Backup berhasil dipulihkan!", { id: "restore" });
@@ -127,16 +117,10 @@ export default function Backup() {
     toast.loading("Menghapus backup...", { id: "delete" });
 
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}/backup/delete.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ filename: backup.filename }),
+      const response = await api.post("/backup/delete.php", {
+        filename: backup.filename,
       });
-      const data = await response.json();
+      const data = response.data;
 
       if (data.success) {
         toast.success("Backup berhasil dihapus!", { id: "delete" });

@@ -1,21 +1,13 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header("Access-Control-Allow-Methods: GET, OPTIONS");
-
-if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
-    http_response_code(200);
-    exit();
-}
+require_once __DIR__ . '/../app/config/cors.php';
+header("Content-Type: application/json");
 
 require_once __DIR__ . '/../app/config/database.php';
 require_once __DIR__ . '/../app/controllers/IjazahController.php';
 require_once __DIR__ . '/../app/helpers/AuthMiddleware.php';
 require_once __DIR__ . '/../app/helpers/ActivityLogger.php';
 
-if (isset($_GET['token']) && !isset($_SERVER['HTTP_AUTHORIZATION'])) {
-    $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $_GET['token'];
-}
+// No manual token assignment needed, AuthMiddleware handles cookies and tokens correctly.
 
 $user = AuthMiddleware::check();
 
@@ -42,24 +34,7 @@ if ($user) {
     $result = $stmt->get_result();
     if ($ijazahData = $result->fetch_assoc()) {
         ActivityLogger::log(
-            $conn,
-            $user,
-            'ijazah_download',
-            'ijazah',
-            "Download ijazah siswa: {$ijazahData['nama']} (NISN: {$ijazahData['nisn']})"
-        );
-    }
-    $stmt->close();
-}
-
-if ($user) {
-    $stmt = $conn->prepare("SELECT nama, nisn FROM ijazah WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($ijazahData = $result->fetch_assoc()) {
-        ActivityLogger::log(
-            $conn,
+            Database::connect(),
             $user,
             'ijazah_download',
             'ijazah',
